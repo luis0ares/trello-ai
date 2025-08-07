@@ -1,21 +1,17 @@
-from sqlalchemy.orm import DeclarativeBase
+from snowflake import SnowflakeGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from app.config import get_config
+from app.config.settings import envs
 
 
 _async_engine = create_async_engine(
-    get_config().DATABASE_URL,
-    echo=get_config().DATABASE_ECHO,
+    envs.DATABASE_URL,
+    echo=envs.DATABASE_ECHO,
 )
 
 AsyncLocalSession = async_sessionmaker(
     _async_engine, autoflush=False, expire_on_commit=False
 )
-
-
-class Base(DeclarativeBase):
-    pass
 
 
 async def get_session():
@@ -27,3 +23,9 @@ async def get_session():
             raise
         finally:
             await session.close()
+
+_snowflake_generator = SnowflakeGenerator(envs.INSTANCE_ID)
+
+
+def generate_snowflake_id() -> int:
+    return next(_snowflake_generator())
