@@ -19,6 +19,7 @@ alembic = "^1.16.4"
 sqlalchemy = "^2.0.42"
 snowflake-id = "^1.0.2"
 uvicorn = { extras = ["standard"], version = "^0.35.0" }
+asyncpg = "^0.30.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.12.7"
