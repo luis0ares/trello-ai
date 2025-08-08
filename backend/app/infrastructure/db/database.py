@@ -28,4 +28,4 @@ _snowflake_generator = SnowflakeGenerator(envs.INSTANCE_ID)
 
 
 def generate_snowflake_id() -> int:
-    return next(_snowflake_generator())
+    return next(_snowflake_generator)

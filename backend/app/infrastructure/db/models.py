@@ -18,7 +18,7 @@ class BaseMixin(DeclarativeBase):
         default=func.now(), nullable=False
     )
     updated_at: Mapped[datetime] = mapped_column(
-        onupdate=func.now(), nullable=False
+        onupdate=func.now(), nullable=True
     )
 
 

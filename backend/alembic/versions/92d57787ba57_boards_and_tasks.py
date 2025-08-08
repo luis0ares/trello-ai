@@ -28,7 +28,7 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('external_id', sa.BigInteger(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
-        sa.Column('updated_at', sa.DateTime(), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), nullable=True),
         sa.PrimaryKeyConstraint('id', name=op.f('pk_boards_id')),
     )
     op.create_index(
@@ -42,7 +42,7 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('external_id', sa.BigInteger(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
-        sa.Column('updated_at', sa.DateTime(), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
             ['board_id'], ['boards.id'], name=op.f('fk_tasks_board_id_boards')),
         sa.PrimaryKeyConstraint('id', name=op.f('pk_tasks_id'))
