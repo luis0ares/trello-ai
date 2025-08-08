@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 
+from app.config.settings import envs
+from app.presentation.api.boards import router as boards_router
+
 
 app = FastAPI(
     title="Task Board API",
@@ -7,13 +10,8 @@ app = FastAPI(
     version="0.1.0",
     contact={"name": "Luis Eduardo Soares",
              "url": "https://github.com/luis0ares"},
+    root_path=envs.API_PREFIX,
 )
 
 
-@app.get("/", include_in_schema=False)
-def root():
-    return {
-        "docs": "/docs",
-        "redoc": "/redoc",
-        "openapi.json": "/openapi.json"
-    }
+app.include_router(boards_router)

@@ -14,6 +14,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    API_PREFIX: str = '/api'
     INSTANCE_ID: int = 1
     ENVIRONMENT: EnvType = "PROD"
 
