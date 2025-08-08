@@ -1,4 +1,4 @@
-from ast import List
+from typing import List
 
 from app.application.dtos.board_dto import BoardDTO
 from app.domain.repositories.board_repository import BoardRepository
@@ -16,7 +16,7 @@ class GetBoardsUseCase:
         """
         boards = await self.board_repository.get_all()
         return [BoardDTO(
-            id=board.external_id,
+            id=str(board.external_id),
             name=board.name,
             position=board.position,
             created_at=board.created_at,

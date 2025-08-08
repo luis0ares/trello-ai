@@ -14,6 +14,6 @@ class MetaDataSchema(BaseSchema):
     created_at: datetime = Field(
         ..., description="Creation timestamp in ISO 8601 format",
         examples=["2023-10-05T14:48:00.000Z"])
-    updated_at: datetime = Field(
+    updated_at: datetime | None = Field(
         ..., description="Last update timestamp in ISO 8601 format",
-        examples=["2023-10-05T14:48:00.000Z"])
+        examples=[None])

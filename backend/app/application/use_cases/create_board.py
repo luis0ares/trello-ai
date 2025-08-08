@@ -1,5 +1,5 @@
 from app.application.dtos.board_dto import BoardCreateDTO, BoardDTO
-from app.domain.models.board import BoardModel
+from app.domain.models.board import BoardCreateModel
 from app.domain.repositories.board_repository import BoardRepository
 
 
@@ -11,19 +11,22 @@ class CreateBoardUseCase:
         """
         Create a new board with the provided data.
 
-        :param board_data: BoardCreateDTO object containing the board details.
+        :param board_data: object containing the board details.
         :return: The created board object.
         """
+        if not isinstance(board_data, BoardCreateDTO):
+            raise ValueError("Invalid payload type")
+        
         # Create the board using the repository
-        to_create = BoardModel(
+        to_create = BoardCreateModel(
             name=board_data.name,
             position=board_data.position,
         )
 
-        created_board = await self.board_repository.create(board_data)
+        created_board = await self.board_repository.create(to_create)
 
         return BoardDTO(
-            id=created_board.external_id,
+            id=str(created_board.external_id),
             name=created_board.name,
             position=created_board.position,
             created_at=created_board.created_at,

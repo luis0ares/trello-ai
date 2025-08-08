@@ -1,11 +1,24 @@
 from dataclasses import dataclass
-
-from app.domain.models import MetadataModel
+from datetime import datetime
 
 
 @dataclass
-class BoardModel(MetadataModel):
-    id: int
-    external_id: str
+class BoardCreateModel:
     name: str
     position: int
+
+
+@dataclass
+class BoardUpdateModel:
+    name: str
+    position: int
+
+
+@dataclass
+class BoardModel:
+    id: int
+    external_id: int
+    name: str
+    position: int
+    created_at: datetime
+    updated_at: datetime | None
