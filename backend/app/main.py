@@ -8,8 +8,11 @@ app = FastAPI(
     title="Task Board API",
     description="Task Board API for managing tasks with Discord login and AI integration.",
     version="0.1.0",
-    contact={"name": "Luis Eduardo Soares",
-             "url": "https://github.com/luis0ares"},
+    contact={
+        "name": "Luis Eduardo Soares",
+        "url": "https://github.com/luis0ares",
+        "email": "luisedu.soares@outlook.com"
+    },
     root_path=envs.API_PREFIX,
 )
 
