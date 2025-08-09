@@ -5,15 +5,15 @@ on:
     branches:
       - actions/*
       - master
-    paths:
-      - 'backend/**'
+    # paths:
+    #   - "backend/**"
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     defaults:
       run:
-          working-directory: backend  
+        working-directory: backend
 
     steps:
       - name: Checkout source code
@@ -31,7 +31,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
           push: true
           tags: |
             luisedu/trello-ai-api:latest
