@@ -31,11 +31,23 @@ pytest-asyncio = "^1.1.0"
 aiosqlite = "^0.21.0"
 taskipy = "^1.14.1"
 
+[tool.pytest.ini_options]
+addopts = "--cov=app --cov-report=html --cov-report=xml"
+
 [tool.pytest_env]
 ENVIRONMENT = "TEST"
 
 [tool.ruff]
 target-version = "py311"
+line-length = 79
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = "single"
 
 # https://coverage.readthedocs.io/en/latest/excluding.html
 [tool.coverage.report]
