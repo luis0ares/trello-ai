@@ -1,7 +1,7 @@
 from datetime import datetime
+
 from sqlalchemy import BigInteger, ForeignKey, Text, func
-from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.infrastructure.db.database import generate_snowflake_id
 

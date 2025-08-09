@@ -5,8 +5,8 @@ on:
     branches:
       - actions/*
       - develop
-    # paths:
-    #   - "backend/**"
+    paths:
+      - "backend/**"
   pull_request:
     branches:
       - develop

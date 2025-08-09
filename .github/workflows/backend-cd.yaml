@@ -5,8 +5,8 @@ on:
     branches:
       - actions/*
       - master
-    # paths:
-    #   - "backend/**"
+    paths:
+      - "backend/**"
 
 jobs:
   build-and-push:

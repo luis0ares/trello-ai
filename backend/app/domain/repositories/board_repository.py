@@ -1,7 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from app.domain.models.board import BoardCreateModel, BoardUpdateModel, BoardModel
+from app.domain.models.board import (
+    BoardCreateModel,
+    BoardModel,
+    BoardUpdateModel,
+)
 
 
 class BoardRepository(ABC):
@@ -25,7 +29,8 @@ class BoardRepository(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    async def update(self, board_id: int, board_data: BoardUpdateModel) -> BoardModel:
+    async def update(self, board_id: int,
+                     board_data: BoardUpdateModel) -> BoardModel:
         """
         Update an existing board with the provided data.
 

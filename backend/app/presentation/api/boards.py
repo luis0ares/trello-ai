@@ -1,4 +1,5 @@
 from typing import List
+
 from fastapi import APIRouter
 
 from app.application.dtos.board_dto import BoardCreateDTO, BoardUpdateDTO
@@ -7,7 +8,11 @@ from app.application.use_cases.delete_board import DeleteBoardUseCase
 from app.application.use_cases.get_boards import GetBoardsUseCase
 from app.application.use_cases.update_board import UpdateBoardUseCase
 from app.presentation.dependencies import BoardRepository
-from app.presentation.schemas.boards import BoardCreate, BoardResponse, BoardUpdate
+from app.presentation.schemas.boards import (
+    BoardCreate,
+    BoardResponse,
+    BoardUpdate,
+)
 
 router = APIRouter(prefix="/boards", tags=["Boards"])
 
@@ -27,7 +32,8 @@ async def get_boards(board_repository: BoardRepository):
 
 
 @router.post("/", response_model=BoardResponse, status_code=201)
-async def create_board(payload: BoardCreate, board_repository: BoardRepository):
+async def create_board(payload: BoardCreate,
+                       board_repository: BoardRepository):
     board = BoardCreateDTO(name=payload.name, position=payload.position)
 
     use_case = CreateBoardUseCase(board_repository)

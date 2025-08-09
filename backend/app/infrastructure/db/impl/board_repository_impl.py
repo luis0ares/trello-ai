@@ -1,8 +1,13 @@
 from typing import List
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.models.board import BoardCreateModel, BoardUpdateModel, BoardModel
+from app.domain.models.board import (
+    BoardCreateModel,
+    BoardModel,
+    BoardUpdateModel,
+)
 from app.domain.repositories.board_repository import BoardRepository
 from app.infrastructure.db.models import BoardEntity
 
