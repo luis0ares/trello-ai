@@ -1,8 +1,7 @@
 from snowflake import SnowflakeGenerator
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.config.settings import envs
-
 
 _async_engine = create_async_engine(
     envs.DATABASE_URL,
@@ -23,6 +22,7 @@ async def get_session():
             raise
         finally:
             await session.close()
+
 
 _snowflake_generator = SnowflakeGenerator(envs.INSTANCE_ID)
 

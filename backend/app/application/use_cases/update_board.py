@@ -1,4 +1,4 @@
-from app.application.dtos.board_dto import BoardUpdateDTO, BoardDTO
+from app.application.dtos.board_dto import BoardDTO, BoardUpdateDTO
 from app.domain.models.board import BoardUpdateModel
 from app.domain.repositories.board_repository import BoardRepository
 
@@ -7,7 +7,8 @@ class UpdateBoardUseCase:
     def __init__(self, board_repository: BoardRepository):
         self.board_repository = board_repository
 
-    async def execute(self, board_id: int, board_data: BoardUpdateDTO) -> BoardDTO:
+    async def execute(self, board_id: int,
+                      board_data: BoardUpdateDTO) -> BoardDTO:
         """
         Update an existing board with the provided data.
 

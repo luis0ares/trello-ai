@@ -16,7 +16,7 @@ class CreateBoardUseCase:
         """
         if not isinstance(board_data, BoardCreateDTO):
             raise ValueError("Invalid payload type")
-        
+
         # Create the board using the repository
         to_create = BoardCreateModel(
             name=board_data.name,
