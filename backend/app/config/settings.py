@@ -2,7 +2,6 @@ from typing import List, Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 EnvType = Literal["PROD", "DEV", "TEST"]
 
 
@@ -14,6 +13,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    API_PREFIX: str = '/api'
     INSTANCE_ID: int = 1
     ENVIRONMENT: EnvType = "PROD"
 

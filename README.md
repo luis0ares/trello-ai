@@ -59,7 +59,7 @@ Example:
 ### **Frontend**
 
 - [x] Project setup with Next.js 15 + Tailwind CSS
-- [ ] Basic UI for boards and tasks
+- [x] Basic UI for boards and tasks
 - [ ] Implement **task creation**
 - [ ] Implement **drag-and-drop** for task cards
 - [ ] Implement **task editing** and **deletion**
@@ -72,23 +72,13 @@ Example:
 ### **Backend**
 
 - [x] Project setup (FastAPI)
-- [ ] Database schema for boards, tasks, and users
-- [ ] API endpoints for boards and tasks
+- [x] Database schema for boards and tasks
+- [x] API endpoints for boards
+- [ ] API endpoints for tasks
+- [ ] Database schema for users
 - [ ] Implement **Discord OAuth2**
 - [ ] OpenAI API integration endpoint for task planning
 - [ ] Unit and integration tests
-
----
-
-## 📜 Changelog
-
-### **v0.1.0 - Initial Setup**
-
-- ✅ Created monorepo structure
-- ✅ Initialized frontend with Next.js and Tailwind CSS
-- ✅ Initialized backend with FastAPI
-- ✅ Created basic project structure
-- ✅ Set up basic backend project configuration and dependencies
 
 ---
 
@@ -120,3 +110,19 @@ cd backend
 poetry install
 poetry run task run
 ```
+
+---
+
+## 📜 Changelog
+
+### **v0.1.0 - Initial Setup**
+
+- ✅ Created monorepo structure
+- ✅ Initialized frontend with Next.js and Tailwind CSS
+- ✅ Initialized backend with FastAPI
+- ✅ Created basic project structure
+- ✅ Set up basic backend project configuration and dependencies
+- ✅ Infrastructure layer for boards and tasks created
+- ✅ Alembic setup with first migration
+- ✅ API endpoints for boards
+- ✅ Basic frontend UI and CI/CD setup

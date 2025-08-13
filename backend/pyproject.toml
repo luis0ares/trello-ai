@@ -19,6 +19,8 @@ alembic = "^1.16.4"
 sqlalchemy = "^2.0.42"
 snowflake-id = "^1.0.2"
 uvicorn = { extras = ["standard"], version = "^0.35.0" }
+asyncpg = "^0.30.0"
+email-validator = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.12.7"
@@ -30,11 +32,23 @@ pytest-asyncio = "^1.1.0"
 aiosqlite = "^0.21.0"
 taskipy = "^1.14.1"
 
+[tool.pytest.ini_options]
+addopts = "--cov=app --cov-report=html --cov-report=xml"
+
 [tool.pytest_env]
 ENVIRONMENT = "TEST"
 
 [tool.ruff]
 target-version = "py311"
+line-length = 79
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = "single"
 
 # https://coverage.readthedocs.io/en/latest/excluding.html
 [tool.coverage.report]
