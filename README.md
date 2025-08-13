@@ -59,7 +59,7 @@ Example:
 ### **Frontend**
 
 - [x] Project setup with Next.js 15 + Tailwind CSS
-- [ ] Basic UI for boards and tasks
+- [x] Basic UI for boards and tasks
 - [ ] Implement **task creation**
 - [ ] Implement **drag-and-drop** for task cards
 - [ ] Implement **task editing** and **deletion**
@@ -125,3 +125,4 @@ poetry run task run
 - ✅ Infrastructure layer for boards and tasks created
 - ✅ Alembic setup with first migration
 - ✅ API endpoints for boards
+- ✅ Basic frontend UI and CI/CD setup
