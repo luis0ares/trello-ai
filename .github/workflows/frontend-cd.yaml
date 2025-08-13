@@ -1,4 +1,4 @@
-name: Backend CD
+name: Frontend CD
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - actions/*
       - master
     paths:
-      - "backend/**"
+      - "frontend/**"
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend
+        working-directory: frontend
 
     steps:
       - name: Checkout source code
@@ -31,7 +31,9 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./backend
+          context: ./frontend
           push: true
           tags: |
             ${{ secrets.DOCKER_HUB_USER }}/${{ secrets.IMAGE_NAME_FRONTEND }}:latest
+          build-args: |
+            API_BASE_URL=${{ secrets.API_BASE_URL }}
