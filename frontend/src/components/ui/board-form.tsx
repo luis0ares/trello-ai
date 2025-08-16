@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import { BoardType } from "@/types";
+import { BoardService } from "@/services/board";
+import { toast } from "sonner";
 
 interface BoardFormProps {
   onAddBoard: (board: BoardType) => void;
@@ -14,27 +16,40 @@ export function BoardForm({ onAddBoard }: BoardFormProps) {
   const [name, setName] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const now = new Date();
-    if (name.trim()) {
+    if (!name.trim()) return;
+
+    const res = await BoardService.createBoard(name.trim());
+    if (res.status === 201) {
+      const board = await res.json();
+
       onAddBoard({
-        id: now.toISOString(),
-        title: name.trim(),
+        id: board.id,
+        title: board.name,
         tasks: [],
       });
+
+      toast.success("Board created successfully", {
+        duration: 2000,
+        action: {
+          label: "Undo",
+          onClick: () => BoardService.deleteBoard(board.id),
+        },
+      });
+
       setName("");
       setIsExpanded(false);
     }
-  };
+  }
 
   if (!isExpanded) {
     return (
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 mx-2">
         <Button
           onClick={() => setIsExpanded(true)}
           variant="outline"
-          className="h-[52px] min-w-[320px] border-dashed border-2 border-slate-800 bg-gray-100 hover:bg-slate-800 text-slate-800 hover:text-slate-200"
+          className="h-[52px] min-w-[320px] border-dashed border-2 border-slate-800 dark:border-slate-200 bg-slate-200 dark:bg-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 text-slate-800 dark:text-slate-200 hover:text-slate-200 dark:hover:text-slate-800"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add another board
@@ -44,7 +59,7 @@ export function BoardForm({ onAddBoard }: BoardFormProps) {
   }
 
   return (
-    <Card className="min-w-[320px] p-4 shadow-sm bg-gray-100">
+    <Card className="min-w-[320px] p-4 shadow-sm bg-slate-100 mx-2">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="board-name" className="text-xl font-medium">
