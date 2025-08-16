@@ -3,41 +3,48 @@
 import { Navbar } from "@/components/layout/navbar";
 import { BoardList } from "@/components/ui/board-list";
 import { TaskForm } from "@/components/ui/task-form";
+import { BoardService } from "@/services/board";
 import { BoardType, TaskType } from "@/types";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
-const initialData: BoardType[] = [
-  {
-    id: "board-1",
-    title: "Pending",
-    tasks: [
-      { id: "task-1", title: "Learn React", description: "Learn React" },
-      {
-        id: "task-2",
-        title: "Read about @hello-pangea/dnd",
-        description: "Learn React",
-      },
-    ],
-  },
-  {
-    id: "board-2",
-    title: "Doing",
-    tasks: [
-      { id: "task-3", title: "Build Trello clone", description: "Learn React" },
-    ],
-  },
-  {
-    id: "board-3",
-    title: "Done",
-    tasks: [
-      { id: "task-4", title: "Drink coffee", description: "Learn React" },
-    ],
-  },
-];
+async function getBoards(): Promise<BoardType[]> {
+  const res = await BoardService.getBoards();
+  if (!res.ok) return [];
+
+  const json = await res.json();
+  return json.map((board) => {
+    return { id: board.id, title: board.name, tasks: [] } as BoardType;
+  });
+}
 
 export default function Home() {
-  const [data, setData] = useState<BoardType[]>(initialData);
+  const { data, isLoading } = useQuery({
+    queryKey: ["boards"],
+    queryFn: getBoards,
+    initialData: [],
+  });
+
+  console.log(data);
+
+  return (
+    <>
+      <main className="flex min-h-screen flex-col items-center">
+        <Navbar />
+
+        {isLoading ? <></> : <TaskBoards boardData={data} />}
+      </main>
+    </>
+  );
+}
+
+function TaskBoards({ boardData }: { boardData: BoardType[] }) {
+  const [data, setData] = useState<BoardType[]>([]);
+
+  useEffect(() => {
+    setData(boardData);
+  }, [boardData]);
 
   function onDragEnd(result: DropResult) {
     const { destination, source, type } = result;
@@ -95,14 +102,10 @@ export default function Home() {
 
   return (
     <>
-      <main className="flex min-h-screen flex-col items-center">
-        <Navbar />
-
-        <DragDropContext onDragEnd={onDragEnd}>
-          <BoardList boards={data} onAddBoard={onAddBoard} />
-        </DragDropContext>
-        <TaskForm onAddTask={onAddTask} boards={data} />
-      </main>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <BoardList boards={data} onAddBoard={onAddBoard} />
+      </DragDropContext>
+      <TaskForm onAddTask={onAddTask} boards={data} />
     </>
   );
 }

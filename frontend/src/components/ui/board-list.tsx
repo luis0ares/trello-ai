@@ -16,7 +16,7 @@ export function BoardList({
         <div
           ref={provided.innerRef}
           {...provided.droppableProps}
-          className="flex flex-1 w-full max-w-[1920px] overflow-x-auto p-5"
+          className="flex flex-1 w-full overflow-x-auto p-5"
         >
           {boards.map((board, index) => (
             <Draggable draggableId={board.id} index={index} key={board.id}>

@@ -1,3 +1,7 @@
+export interface TypedResponse<T> extends Response {
+  json: () => Promise<T>;
+}
+
 export interface TaskType {
   id: string;
   title: string;
