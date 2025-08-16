@@ -66,12 +66,7 @@ export const TaskForm = ({ onAddTask, boards }: TaskFormProps) => {
       <Card className="w-[480px] p-4 bg-card shadow-xl border animate-slide-up">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">Add New Task</h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={resetForm}
-            className="h-8 w-8 p-0"
-          >
+          <Button variant="ghost" onClick={resetForm} className="h-8 w-8 p-0">
             <X className="w-4 h-4" />
           </Button>
         </div>
@@ -124,18 +119,12 @@ export const TaskForm = ({ onAddTask, boards }: TaskFormProps) => {
           <div className="flex gap-2 pt-2">
             <Button
               type="submit"
-              size="sm"
               className="flex-1 bg-slate-900 hover:bg-slate-900/90"
               disabled={!title.trim() || !boardId}
             >
               Add Task
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={resetForm}
-            >
+            <Button type="button" variant="outline" onClick={resetForm}>
               Cancel
             </Button>
           </div>
