@@ -81,13 +81,16 @@ export default function Home() {
   }
 
   function onAddTask(boardId: string, task: TaskType) {
-    console.log("onAddTask", boardId, task);
     const newData = data.map((board) => {
       if (board.id === boardId) board.tasks.push(task);
       return board;
     });
-
     setData([...newData]);
+  }
+
+  function onAddBoard(board: BoardType) {
+    const newData = [...data, board];
+    setData(newData);
   }
 
   return (
@@ -96,7 +99,7 @@ export default function Home() {
         <Navbar />
 
         <DragDropContext onDragEnd={onDragEnd}>
-          <BoardList boards={data} />
+          <BoardList boards={data} onAddBoard={onAddBoard} />
         </DragDropContext>
         <TaskForm onAddTask={onAddTask} boards={data} />
       </main>

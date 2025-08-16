@@ -1,8 +1,15 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { Board } from "./board";
 import { BoardType } from "@/types";
+import { BoardForm } from "./board-form";
 
-export function BoardList({ boards }: { boards: BoardType[] }) {
+export function BoardList({
+  onAddBoard,
+  boards,
+}: {
+  onAddBoard: (board: BoardType) => void;
+  boards: BoardType[];
+}) {
   return (
     <Droppable droppableId="all-boards" direction="horizontal" type="board">
       {(provided) => (
@@ -24,6 +31,7 @@ export function BoardList({ boards }: { boards: BoardType[] }) {
             </Draggable>
           ))}
           {provided.placeholder}
+          <BoardForm onAddBoard={onAddBoard} boardCount={boards.length} />
         </div>
       )}
     </Droppable>

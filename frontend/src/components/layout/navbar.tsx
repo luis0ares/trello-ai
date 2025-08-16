@@ -11,7 +11,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button size="sm">Log in</Button>
+          <Button size="lg">Log in</Button>
         </div>
       </div>
     </header>
