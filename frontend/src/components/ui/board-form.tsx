@@ -8,10 +8,9 @@ import { BoardType } from "@/types";
 
 interface BoardFormProps {
   onAddBoard: (board: BoardType) => void;
-  boardCount: number;
 }
 
-export function BoardForm({ onAddBoard, boardCount }: BoardFormProps) {
+export function BoardForm({ onAddBoard }: BoardFormProps) {
   const [name, setName] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
 

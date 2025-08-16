@@ -31,7 +31,7 @@ export function BoardList({
             </Draggable>
           ))}
           {provided.placeholder}
-          <BoardForm onAddBoard={onAddBoard} boardCount={boards.length} />
+          <BoardForm onAddBoard={onAddBoard} />
         </div>
       )}
     </Droppable>

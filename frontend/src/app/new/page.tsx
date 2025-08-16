@@ -152,7 +152,7 @@ export default function App() {
 
     // Moving boards
     if (type === "board") {
-      const newBoards = Array.from(data.boards);
+      const newBoards = [...data.boards];
       const [moved] = newBoards.splice(source.index, 1);
       newBoards.splice(destination.index, 0, moved);
       setData({ boards: newBoards });
@@ -170,7 +170,7 @@ export default function App() {
     const sourceBoard = data.boards[sourceBoardIndex];
     const destBoard = data.boards[destBoardIndex];
 
-    const sourceTasks = Array.from(sourceBoard.tasks);
+    const sourceTasks = [...sourceBoard.tasks];
     const [movedTask] = sourceTasks.splice(source.index, 1);
 
     if (sourceBoard === destBoard) {
@@ -179,7 +179,7 @@ export default function App() {
       newBoards[sourceBoardIndex] = { ...sourceBoard, tasks: sourceTasks };
       setData({ boards: newBoards });
     } else {
-      const destTasks = Array.from(destBoard.tasks);
+      const destTasks = [...destBoard.tasks];
       destTasks.splice(destination.index, 0, movedTask);
 
       const newBoards = [...data.boards];
