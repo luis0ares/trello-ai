@@ -16,7 +16,7 @@ export function Board({
         {...dragHandleProps}
         className="bg-slate-800 text-slate-200 p-3 rounded-t-lg cursor-grab active:cursor-grabbing flex items-center justify-between"
       >
-        <h3 className="font-semibold text-sm flex items-center gap-2">
+        <h3 className="font-semibold text-xl flex items-center gap-2">
           {board.title}
           <span className="ml-2 px-2 py-1 text-xs bg-white/20 rounded-full">
             {board.tasks.length}

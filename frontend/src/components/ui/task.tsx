@@ -12,7 +12,8 @@ export function Task({ task, index }: { task: TaskType; index: number }) {
           className="bg-white p-2 rounded shadow-sm mb-2 border border-gray-200"
           style={provided.draggableProps.style}
         >
-          {task.content}
+          <h4 className="text-lg font-bold text-gray-800">{task.title}</h4>
+          <p className="m-1">{task.description}</p>
         </div>
       )}
     </Draggable>
