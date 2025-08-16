@@ -2,7 +2,8 @@
 
 import { Navbar } from "@/components/layout/navbar";
 import { BoardList } from "@/components/ui/board-list";
-import { BoardType } from "@/types";
+import { TaskForm } from "@/components/ui/task-form";
+import { BoardType, TaskType } from "@/types";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { useState } from "react";
 
@@ -11,19 +12,27 @@ const initialData: BoardType[] = [
     id: "board-1",
     title: "Pending",
     tasks: [
-      { id: "task-1", content: "Learn React" },
-      { id: "task-2", content: "Read about @hello-pangea/dnd" },
+      { id: "task-1", title: "Learn React", description: "Learn React" },
+      {
+        id: "task-2",
+        title: "Read about @hello-pangea/dnd",
+        description: "Learn React",
+      },
     ],
   },
   {
     id: "board-2",
     title: "Doing",
-    tasks: [{ id: "task-3", content: "Build Trello clone" }],
+    tasks: [
+      { id: "task-3", title: "Build Trello clone", description: "Learn React" },
+    ],
   },
   {
     id: "board-3",
     title: "Done",
-    tasks: [{ id: "task-4", content: "Drink coffee" }],
+    tasks: [
+      { id: "task-4", title: "Drink coffee", description: "Learn React" },
+    ],
   },
 ];
 
@@ -71,6 +80,16 @@ export default function Home() {
     }
   }
 
+  function onAddTask(boardId: string, task: TaskType) {
+    console.log("onAddTask", boardId, task);
+    const newData = data.map((board) => {
+      if (board.id === boardId) board.tasks.push(task);
+      return board;
+    });
+
+    setData([...newData]);
+  }
+
   return (
     <>
       <main className="flex min-h-screen flex-col items-center">
@@ -79,6 +98,7 @@ export default function Home() {
         <DragDropContext onDragEnd={onDragEnd}>
           <BoardList boards={data} />
         </DragDropContext>
+        <TaskForm onAddTask={onAddTask} boards={data} />
       </main>
     </>
   );

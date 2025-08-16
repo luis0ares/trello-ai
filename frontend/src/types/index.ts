@@ -1,6 +1,7 @@
 export interface TaskType {
   id: string;
-  content: string;
+  title: string;
+  description?: string;
 }
 
 export interface BoardType {
