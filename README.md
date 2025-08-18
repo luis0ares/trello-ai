@@ -74,7 +74,7 @@ Example:
 - [x] Project setup (FastAPI)
 - [x] Database schema for boards and tasks
 - [x] API endpoints for boards
-- [ ] API endpoints for tasks
+- [x] API endpoints for tasks
 - [ ] Database schema for users
 - [ ] Implement **Discord OAuth2**
 - [ ] OpenAI API integration endpoint for task planning
@@ -126,3 +126,6 @@ poetry run task run
 - ✅ Alembic setup with first migration
 - ✅ API endpoints for boards
 - ✅ Basic frontend UI and CI/CD setup
+
+### **v0.1.1 - Task Board** (to release)
+- ✅ API endpoints for tasks
