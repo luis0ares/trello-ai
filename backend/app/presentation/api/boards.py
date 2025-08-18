@@ -17,7 +17,7 @@ from app.presentation.schemas.boards import (
 router = APIRouter(prefix="/boards", tags=["Boards"])
 
 
-@router.get("/", response_model=List[BoardResponse])
+@router.get("", response_model=List[BoardResponse])
 async def get_boards(board_repository: BoardRepository):
     use_case = GetBoardsUseCase(board_repository)
     boards = await use_case.execute()
@@ -31,7 +31,7 @@ async def get_boards(board_repository: BoardRepository):
     ) for board in boards]
 
 
-@router.post("/", response_model=BoardResponse, status_code=201)
+@router.post("", response_model=BoardResponse, status_code=201)
 async def create_board(payload: BoardCreate,
                        board_repository: BoardRepository):
     board = BoardCreateDTO(name=payload.name, position=payload.position)
@@ -54,14 +54,14 @@ async def update_board(id: str, payload: BoardUpdate,
     board = BoardUpdateDTO(name=payload.name, position=payload.position)
 
     use_case = UpdateBoardUseCase(board_repository)
-    created_board = await use_case.execute(int(id), board)
+    updated_board = await use_case.execute(int(id), board)
 
     return BoardResponse(
-        id=created_board.id,
-        name=created_board.name,
-        position=created_board.position,
-        created_at=created_board.created_at,
-        updated_at=created_board.updated_at
+        id=updated_board.id,
+        name=updated_board.name,
+        position=updated_board.position,
+        created_at=updated_board.created_at,
+        updated_at=updated_board.updated_at
     )
 
 

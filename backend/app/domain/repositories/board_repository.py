@@ -29,6 +29,16 @@ class BoardRepository(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
+    async def get_by_external_id(self, external_id: int) -> BoardModel | None:
+        """
+        Retrieve a board by its external ID.
+
+        :param external_id: The external ID of the board to retrieve.
+        :return: The board object if found, otherwise None.
+        """
+        raise NotImplementedError("Method not implemented")
+
+    @abstractmethod
     async def update(self, board_id: int,
                      board_data: BoardUpdateModel) -> BoardModel:
         """

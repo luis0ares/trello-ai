@@ -53,6 +53,24 @@ class BoardRepositoryImpl(BoardRepository):
             created_at=board.created_at,
             updated_at=board.updated_at
         ) for board in boards]
+    
+    async def get_by_external_id(self, external_id: int) -> BoardModel | None:
+        stmt = select(BoardEntity).where(
+            BoardEntity.external_id == external_id)
+        result = await self.db_session.execute(stmt)
+        board_entity = result.scalar_one_or_none()
+
+        if not board_entity:
+            return None
+
+        return BoardModel(
+            id=board_entity.id,
+            external_id=board_entity.external_id,
+            name=board_entity.name,
+            position=board_entity.position,
+            created_at=board_entity.created_at,
+            updated_at=board_entity.updated_at
+        )
 
     async def update(
             self, board_id: int, board_data: BoardUpdateModel) -> BoardModel:

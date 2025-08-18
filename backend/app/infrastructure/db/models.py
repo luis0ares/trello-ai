@@ -37,4 +37,4 @@ class TaskEntity(BaseMixin):
     position: Mapped[int] = mapped_column(nullable=False, default=0)
 
     board_id: Mapped[int] = mapped_column(
-        ForeignKey("boards.id"), index=True, nullable=False)
+        BigInteger, ForeignKey("boards.id"), index=True, nullable=False)

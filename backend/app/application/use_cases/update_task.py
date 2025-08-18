@@ -1,0 +1,47 @@
+from app.application.dtos.task_dto import TaskDTO, TaskUpdateDTO
+from app.domain.models.task import TaskUpdateModel
+from app.domain.repositories.board_repository import BoardRepository
+from app.domain.repositories.task_repository import TaskRepository
+
+
+class UpdateTaskUseCase:
+    def __init__(self, board_repository: BoardRepository,
+                 task_repository: TaskRepository):
+        self.board_repository = board_repository
+        self.task_repository = task_repository
+
+    async def execute(self, task_id: int,
+                      task_data: TaskUpdateDTO) -> TaskDTO:
+        """
+        Update an existing task with the provided data.
+
+        :param task_id: The external ID of the task to update.
+        :param task_data: object containing the updated task details.
+        :return: The updated task object.
+        """
+        if not isinstance(task_data, TaskUpdateDTO):
+            raise ValueError("Invalid payload type")
+
+        board = await self.board_repository.get_by_external_id(
+            task_data.board_id)
+        if not board:
+            raise ValueError("Board not found")
+
+        to_update = TaskUpdateModel(
+            board_id=board.id,
+            title=task_data.title,
+            description=task_data.description,
+            position=task_data.position,
+        )
+
+        updated = await self.task_repository.update(task_id, to_update)
+
+        return TaskDTO(
+            id=str(updated.external_id),
+            board_id=str(board.external_id),
+            title=updated.title,
+            description=updated.description,
+            position=updated.position,
+            created_at=updated.created_at,
+            updated_at=updated.updated_at
+        )
