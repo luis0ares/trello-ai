@@ -7,7 +7,9 @@ from app.domain.models.board import (
     BoardCreateModel,
     BoardModel,
     BoardUpdateModel,
+    BoardWithTasksModel,
 )
+from app.domain.models.task import TaskModel
 from app.domain.repositories.board_repository import BoardRepository
 from app.infrastructure.db.models import BoardEntity
 
@@ -40,19 +42,47 @@ class BoardRepositoryImpl(BoardRepository):
             await self.db_session.rollback()
             raise e
 
-    async def get_all(self) -> List[BoardModel]:
+    async def get_all(self) -> List[BoardWithTasksModel]:
         stmt = select(BoardEntity).order_by(BoardEntity.position)
         result = await self.db_session.execute(stmt)
         boards = result.scalars().all()
 
-        return [BoardModel(
+        return [BoardWithTasksModel(
             id=board.id,
             external_id=board.external_id,
             name=board.name,
             position=board.position,
             created_at=board.created_at,
-            updated_at=board.updated_at
+            updated_at=board.updated_at,
+            tasks=[TaskModel(
+                id=task.id,
+                external_id=task.external_id,
+                board_id=board.id,
+                title=task.title,
+                description=task.description,
+                position=task.position,
+                created_at=task.created_at,
+                updated_at=task.updated_at
+            ) for task in board.tasks]
         ) for board in boards]
+
+    async def get_by_external_id(self, external_id: int) -> BoardModel | None:
+        stmt = select(BoardEntity).where(
+            BoardEntity.external_id == external_id)
+        result = await self.db_session.execute(stmt)
+        board_entity = result.scalar_one_or_none()
+
+        if not board_entity:
+            return None
+
+        return BoardModel(
+            id=board_entity.id,
+            external_id=board_entity.external_id,
+            name=board_entity.name,
+            position=board_entity.position,
+            created_at=board_entity.created_at,
+            updated_at=board_entity.updated_at
+        )
 
     async def update(
             self, board_id: int, board_data: BoardUpdateModel) -> BoardModel:

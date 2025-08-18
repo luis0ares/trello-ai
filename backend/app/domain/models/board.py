@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import List
+
+from app.domain.models.task import TaskModel
 
 
 @dataclass
@@ -22,3 +25,8 @@ class BoardModel:
     position: int
     created_at: datetime
     updated_at: datetime | None
+
+
+@dataclass
+class BoardWithTasksModel(BoardModel):
+    tasks: List[TaskModel]

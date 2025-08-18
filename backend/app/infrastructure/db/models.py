@@ -1,7 +1,8 @@
 from datetime import datetime
+from typing import List
 
 from sqlalchemy import BigInteger, ForeignKey, Text, func
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from app.infrastructure.db.database import generate_snowflake_id
 
@@ -28,6 +29,9 @@ class BoardEntity(BaseMixin):
     name: Mapped[str] = mapped_column(index=True)
     position: Mapped[int] = mapped_column(nullable=False, default=0)
 
+    tasks: Mapped[List["TaskEntity"]] = relationship(
+        back_populates="board", lazy="subquery")
+
 
 class TaskEntity(BaseMixin):
     __tablename__ = "tasks"
@@ -37,4 +41,7 @@ class TaskEntity(BaseMixin):
     position: Mapped[int] = mapped_column(nullable=False, default=0)
 
     board_id: Mapped[int] = mapped_column(
-        ForeignKey("boards.id"), index=True, nullable=False)
+        BigInteger, ForeignKey("boards.id"), index=True, nullable=False)
+
+    board: Mapped["BoardEntity"] = relationship(
+        back_populates="tasks", lazy="joined")
