@@ -5,6 +5,7 @@ from app.domain.models.board import (
     BoardCreateModel,
     BoardModel,
     BoardUpdateModel,
+    BoardWithTasksModel
 )
 
 
@@ -20,9 +21,9 @@ class BoardRepository(ABC):
         raise NotImplementedError("Method not implemented")
 
     @abstractmethod
-    async def get_all(self) -> List[BoardModel]:
+    async def get_all(self) -> List[BoardWithTasksModel]:
         """
-        Retrieve all boards.
+        Retrieve all boards with their associated tasks.
 
         :return: A list containing all boards objects found.
         """

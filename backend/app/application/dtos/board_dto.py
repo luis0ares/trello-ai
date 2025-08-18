@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from app.application.dtos.task_dto import TaskDTO
+
 
 @dataclass
 class BoardCreateDTO:
@@ -21,3 +23,7 @@ class BoardDTO:
     position: int
     created_at: datetime | None
     updated_at: datetime | None
+
+@dataclass
+class BoardWithTasksDTO(BoardDTO):
+    tasks: list[TaskDTO]

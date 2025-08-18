@@ -7,19 +7,21 @@ from app.application.use_cases.create_board import CreateBoardUseCase
 from app.application.use_cases.delete_board import DeleteBoardUseCase
 from app.application.use_cases.get_boards import GetBoardsUseCase
 from app.application.use_cases.update_board import UpdateBoardUseCase
-from app.presentation.dependencies import BoardRepository
+from app.presentation.dependencies import (BoardRepository, TaskRepository)
 from app.presentation.schemas.boards import (
     BoardCreate,
     BoardResponse,
     BoardUpdate,
 )
+from app.presentation.schemas.tasks import TaskResponse
 
 router = APIRouter(prefix="/boards", tags=["Boards"])
 
 
 @router.get("", response_model=List[BoardResponse])
-async def get_boards(board_repository: BoardRepository):
-    use_case = GetBoardsUseCase(board_repository)
+async def get_boards(
+        board_repository: BoardRepository, task_repository: TaskRepository):
+    use_case = GetBoardsUseCase(board_repository, TaskRepository)
     boards = await use_case.execute()
 
     return [BoardResponse(
@@ -27,7 +29,16 @@ async def get_boards(board_repository: BoardRepository):
         name=board.name,
         position=board.position,
         created_at=board.created_at,
-        updated_at=board.updated_at
+        updated_at=board.updated_at,
+        tasks=[TaskResponse(
+            id=task.id,
+            board_id=task.board_id,
+            title=task.title,
+            description=task.description,
+            position=task.position,
+            created_at=task.created_at,
+            updated_at=task.updated_at
+        ) for task in board.tasks]
     ) for board in boards]
 
 
