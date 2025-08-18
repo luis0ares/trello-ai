@@ -26,6 +26,7 @@ class BoardModel:
     created_at: datetime
     updated_at: datetime | None
 
+
 @dataclass
 class BoardWithTasksModel(BoardModel):
-    tasks: List[TaskModel] 
+    tasks: List[TaskModel]

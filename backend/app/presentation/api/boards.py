@@ -7,7 +7,7 @@ from app.application.use_cases.create_board import CreateBoardUseCase
 from app.application.use_cases.delete_board import DeleteBoardUseCase
 from app.application.use_cases.get_boards import GetBoardsUseCase
 from app.application.use_cases.update_board import UpdateBoardUseCase
-from app.presentation.dependencies import (BoardRepository, TaskRepository)
+from app.presentation.dependencies import BoardRepository, TaskRepository
 from app.presentation.schemas.boards import (
     BoardCreate,
     BoardResponse,

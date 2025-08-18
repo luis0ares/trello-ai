@@ -1,4 +1,3 @@
-from typing import List
 
 from fastapi import APIRouter
 
@@ -6,7 +5,7 @@ from app.application.dtos.task_dto import TaskCreateDTO, TaskUpdateDTO
 from app.application.use_cases.create_task import CreateTaskUseCase
 from app.application.use_cases.delete_task import DeleteTaskUseCase
 from app.application.use_cases.update_task import UpdateTaskUseCase
-from app.presentation.dependencies import (BoardRepository, TaskRepository)
+from app.presentation.dependencies import BoardRepository, TaskRepository
 from app.presentation.schemas.tasks import (
     TaskCreate,
     TaskResponse,

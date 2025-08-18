@@ -7,7 +7,7 @@ from app.domain.models.board import (
     BoardCreateModel,
     BoardModel,
     BoardUpdateModel,
-    BoardWithTasksModel
+    BoardWithTasksModel,
 )
 from app.domain.models.task import TaskModel
 from app.domain.repositories.board_repository import BoardRepository
@@ -65,7 +65,7 @@ class BoardRepositoryImpl(BoardRepository):
                 updated_at=task.updated_at
             ) for task in board.tasks]
         ) for board in boards]
-    
+
     async def get_by_external_id(self, external_id: int) -> BoardModel | None:
         stmt = select(BoardEntity).where(
             BoardEntity.external_id == external_id)

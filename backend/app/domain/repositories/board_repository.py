@@ -5,7 +5,7 @@ from app.domain.models.board import (
     BoardCreateModel,
     BoardModel,
     BoardUpdateModel,
-    BoardWithTasksModel
+    BoardWithTasksModel,
 )
 
 

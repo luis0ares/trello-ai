@@ -20,9 +20,10 @@ class CreateTaskUseCase:
         if not isinstance(task_data, TaskCreateDTO):
             raise ValueError("Invalid payload type")
 
-        board = await self.board_repository.get_by_external_id(task_data.board_id)
+        board = await self.board_repository.get_by_external_id(
+            task_data.board_id)
         if not board:
-            # TODO: Create a custom exception for not found and an exeption handler
+            # TODO: Custom exception for not found and an exeption handler
             raise ValueError("Board not found")
 
         # Create the task using the repository

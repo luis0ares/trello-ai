@@ -7,7 +7,8 @@ from app.domain.repositories.task_repository import TaskRepository
 
 
 class GetBoardsUseCase:
-    def __init__(self, board_repository: BoardRepository, task_repository: TaskRepository):
+    def __init__(self, board_repository: BoardRepository,
+                 task_repository: TaskRepository):
         self.board_repository = board_repository
         self.task_repository = task_repository
 
