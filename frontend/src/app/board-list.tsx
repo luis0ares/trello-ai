@@ -5,9 +5,13 @@ import { BoardForm } from "./board-form";
 
 export function BoardList({
   onAddBoard,
+  onDeleteBoard,
+  onDeleteTask,
   boards,
 }: {
-  onAddBoard: (board: BoardType) => void;
+  onAddBoard: (name: string) => Promise<boolean>;
+  onDeleteBoard: (id: string) => Promise<boolean>;
+  onDeleteTask: (id: string) => Promise<boolean>;
   boards: BoardType[];
 }) {
   return (
@@ -24,6 +28,8 @@ export function BoardList({
                 <div ref={provided.innerRef} {...provided.draggableProps}>
                   <Board
                     board={board}
+                    onDeleteBoard={onDeleteBoard}
+                    onDeleteTask={onDeleteTask}
                     dragHandleProps={provided.dragHandleProps}
                   />
                 </div>
@@ -31,7 +37,7 @@ export function BoardList({
             </Draggable>
           ))}
           {provided.placeholder}
-          <BoardForm onAddBoard={onAddBoard} />
+          <BoardForm onAddBoard={onAddBoard}  />
         </div>
       )}
     </Droppable>

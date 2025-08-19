@@ -12,34 +12,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, X } from "lucide-react";
-import { TaskType, BoardType } from "@/types";
+import { BoardType } from "@/types";
 
 interface TaskFormProps {
-  onAddTask: (boardId: string, task: TaskType) => void;
+  onAddTask: (
+    boardId: string,
+    title: string,
+    description?: string
+  ) => Promise<void>;
   boards: BoardType[];
 }
 
-export const TaskForm = ({ onAddTask, boards }: TaskFormProps) => {
+export function TaskForm({ onAddTask, boards }: TaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [boardId, setBoardId] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (title.trim() && boardId) {
-      const now = new Date();
-      onAddTask(boardId, {
-        id: now.toISOString(),
-        title: title.trim() ?? "",
-        description: description.trim() ?? "",
-      });
+      await onAddTask(boardId, title, description);
       setTitle("");
       setDescription("");
       setBoardId("");
       setIsExpanded(false);
     }
-  };
+  }
 
   const resetForm = () => {
     setTitle("");
@@ -132,4 +131,4 @@ export const TaskForm = ({ onAddTask, boards }: TaskFormProps) => {
       </Card>
     </div>
   );
-};
+}

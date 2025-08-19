@@ -4,12 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Plus } from "lucide-react";
-import { BoardType } from "@/types";
-import { BoardService } from "@/services/board";
-import { toast } from "sonner";
 
 interface BoardFormProps {
-  onAddBoard: (board: BoardType) => void;
+  onAddBoard: (name: string) => Promise<boolean>;
 }
 
 export function BoardForm({ onAddBoard }: BoardFormProps) {
@@ -19,25 +16,8 @@ export function BoardForm({ onAddBoard }: BoardFormProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
-
-    const res = await BoardService.createBoard(name.trim());
-    if (res.status === 201) {
-      const board = await res.json();
-
-      onAddBoard({
-        id: board.id,
-        title: board.name,
-        tasks: [],
-      });
-
-      toast.success("Board created successfully", {
-        duration: 2000,
-        action: {
-          label: "Undo",
-          onClick: () => BoardService.deleteBoard(board.id),
-        },
-      });
-
+    const result = await onAddBoard(name);
+    if (result) {
       setName("");
       setIsExpanded(false);
     }

@@ -6,11 +6,13 @@ export interface TaskType {
   id: string;
   title: string;
   description?: string;
+  position: number;
 }
 
 export interface BoardType {
   id: string;
   title: string;
+  position: number;
   tasks: TaskType[];
 }
 
