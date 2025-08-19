@@ -27,7 +27,7 @@ class GetBoardsUseCase:
             updated_at=board.updated_at,
             tasks=[TaskDTO(
                 id=str(task.external_id),
-                board_id=str(task.board_id),
+                board_id=str(board.external_id),
                 title=task.title,
                 description=task.description,
                 position=task.position,
