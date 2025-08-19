@@ -30,6 +30,7 @@ const eslintConfig = [
       "unicorn/empty-brace-spaces": "error",
       "unicorn/error-message": "error",
       "unicorn/prevent-abbreviations": "off",
+      "unicorn/no-array-for-each": "off",
       "unicorn/filename-case": [
         "error",
         {

@@ -30,7 +30,8 @@ class BoardEntity(BaseMixin):
     position: Mapped[int] = mapped_column(nullable=False, default=0)
 
     tasks: Mapped[List["TaskEntity"]] = relationship(
-        back_populates="board", lazy="subquery")
+        back_populates="board", lazy="subquery",
+        order_by="TaskEntity.position")
 
 
 class TaskEntity(BaseMixin):
