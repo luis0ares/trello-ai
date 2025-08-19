@@ -60,9 +60,10 @@ Example:
 
 - [x] Project setup with Next.js 15 + Tailwind CSS
 - [x] Basic UI for boards and tasks
-- [ ] Implement **task creation**
-- [ ] Implement **drag-and-drop** for task cards
-- [ ] Implement **task editing** and **deletion**
+- [x] Implement **task creation**
+- [x] Implement **drag-and-drop** for task cards
+- [x] Implement **task editing**
+- [ ] Implement **task deletion**
 - [ ] Implement **authentication** using Discord OAuth2
 - [ ] Integrate with backend API for data persistence
 - [ ] Improve **UI design** for better support on mobile devices
@@ -128,4 +129,6 @@ poetry run task run
 - ✅ Basic frontend UI and CI/CD setup
 
 ### **v0.1.1 - Task Board** (to release)
+
 - ✅ API endpoints for tasks
+- ✅ Now it's possible to change the position of boards and tasks by dragging and dropping them
