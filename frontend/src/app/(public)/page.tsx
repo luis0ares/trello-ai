@@ -1,8 +1,8 @@
 "use client";
 
 import { Navbar } from "@/components/layout/navbar";
-import { BoardList } from "@/app/board-list";
-import { TaskForm } from "@/app/task-form";
+import { BoardList } from "@/components/board/board-list";
+import { TaskForm } from "@/app/(public)/task-form";
 import { BoardService } from "@/services/board";
 import { TaskService } from "@/services/task";
 import { BoardType, TaskType } from "@/types";
@@ -10,6 +10,7 @@ import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { ChatSheet } from "./chat-sheet";
 
 async function getBoards(): Promise<BoardType[]> {
   const res = await BoardService.getBoards();
@@ -229,6 +230,7 @@ function TaskBoards({ boardData }: { boardData: BoardType[] }) {
         />
       </DragDropContext>
       <TaskForm onAddTask={handleAddTask} boards={data} />
+      <ChatSheet />
     </>
   );
 }

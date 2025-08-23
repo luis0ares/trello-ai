@@ -61,7 +61,7 @@ export function TaskForm({ onAddTask, boards }: TaskFormProps) {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-60">
       <Card className="w-[480px] p-4 bg-card shadow-xl border animate-slide-up">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">Add New Task</h3>
