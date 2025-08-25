@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Made With](https://img.shields.io/badge/made%20with-AI-blueviolet)
 
-A modern **task management application** inspired by **Trello**, enhanced with **AI** for smart task planning and **secure authentication** using your Discord account.  
+A modern **task management application** inspired by **Trello**, enhanced with **AI** for smart task planning.  
 This project is structured as a **monorepo**, containing both **backend** and **frontend** applications.
 
 > _Note: This is a side project developed for learning and experimentation purposes._
@@ -14,7 +14,6 @@ This project is structured as a **monorepo**, containing both **backend** and **
 
 - ✅ **Trello-like board** for organizing tasks
 - ✅ **AI-powered assistant** for intelligent task creation
-- ✅ **Authentication & Authorization** (Login/Register)
 - ✅ **Responsive UI** optimized for desktop and mobile
 
 ---
@@ -25,7 +24,6 @@ This project is structured as a **monorepo**, containing both **backend** and **
 - **Backend:** FastAPI (Python)
 - **Database:** PostgreSQL (SQLAlchemy)
 - **AI Integration:** OpenAI API
-- **Authentication:** Discord OAuth2
 
 ---
 
@@ -48,7 +46,7 @@ Example:
 
 ### **Milestones**
 
-- **MVP**: Basic board UI + manual task creation + authentication
+- **MVP**: Basic board UI + manual task creation
 - **Beta**: AI task planning + drag-and-drop functionality
 - **v1.0**: Public release + optimized performance + testing
 
@@ -64,7 +62,6 @@ Example:
 - [x] Implement **drag-and-drop** for task cards
 - [x] Implement **task editing**
 - [ ] Implement **task deletion**
-- [ ] Implement **authentication** using Discord OAuth2
 - [ ] Integrate with backend API for data persistence
 - [ ] Improve **UI design** for better support on mobile devices
 - [ ] Implement **AI assistant chat** component
@@ -76,9 +73,7 @@ Example:
 - [x] Database schema for boards and tasks
 - [x] API endpoints for boards
 - [x] API endpoints for tasks
-- [ ] Database schema for users
-- [ ] Implement **Discord OAuth2**
-- [ ] OpenAI API integration endpoint for task planning
+- [x] OpenAI API integration endpoint for task planning
 - [ ] Unit and integration tests
 
 ---
@@ -132,3 +127,4 @@ poetry run task run
 
 - ✅ API endpoints for tasks
 - ✅ Now it's possible to change the position of boards and tasks by dragging and dropping them
+- ✅ Websocket integrated with Open AI to generate tasks based in the user conversation

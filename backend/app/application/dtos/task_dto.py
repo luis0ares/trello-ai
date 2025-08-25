@@ -1,5 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import List
+
+from app.config.tasks_prompt import StructuredReply
 
 
 @dataclass
@@ -27,3 +30,10 @@ class TaskDTO:
     position: int
     created_at: datetime | None
     updated_at: datetime | None
+
+
+@dataclass
+class TaskSuggestionDTO:
+    final: bool
+    message: str | None
+    tasks: List[StructuredReply] | None

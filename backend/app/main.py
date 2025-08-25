@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import envs
 from app.presentation.api.boards import router as boards_router
 from app.presentation.api.tasks import router as tasks_router
-
 from app.presentation.socket.tasks import router as ws_tasks_router
 
 app = FastAPI(
