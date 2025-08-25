@@ -24,5 +24,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     DATABASE_ECHO: bool = False
 
+    OPENAI_API_KEY: str | None
+
 
 envs = Settings()
