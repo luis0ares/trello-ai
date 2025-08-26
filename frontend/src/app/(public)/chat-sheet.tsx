@@ -62,16 +62,14 @@ export function ChatSheet({
 
   useEffect(() => {
     function scrollToBottom() {
-      if (scrollAreaRef.current) {
-        const scrollContainer = scrollAreaRef.current.querySelector(
-          "[data-radix-scroll-area-viewport]"
-        );
+      if (scrollAreaRef.current && messages.length > 0) {
+        const scrollContainer = scrollAreaRef.current;
         if (scrollContainer) {
           scrollContainer.scrollTop = scrollContainer.scrollHeight;
         }
       }
     }
-    // Auto-scroll to bottom when new messages arrive
+    // Auto-scroll to bottom when new message arrive
     scrollToBottom();
   }, [messages]);
 
@@ -134,7 +132,11 @@ export function ChatSheet({
         </div>
       </SheetTrigger>
 
-      <SheetContent className="w-full sm:w-[640px] sm:max-w-full border-b bg-slate-200/95 shadow-xl dark:bg-slate-800/95 backdrop-blur text-slate-800 dark:text-slate-200">
+      <SheetContent
+        className="w-full sm:w-[640px] sm:max-w-full border-b bg-slate-300/95 shadow-xl dark:bg-slate-700/95 backdrop-blur text-slate-800 dark:text-slate-200"
+        // Prevent page scroll down when sheet is closed
+        onCloseAutoFocus={(event) => event.preventDefault()}
+      >
         <SheetHeader>
           <SheetTitle className="text-2xl font-semibold border-b pb-4 border-slate-950 dark:border-slate-50 pl-6">
             Auto create tasks with AI

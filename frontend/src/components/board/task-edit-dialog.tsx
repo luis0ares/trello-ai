@@ -25,7 +25,7 @@ import { Textarea } from "../ui/textarea";
 
 const taskFormSchema = z.object({
   title: z.string().min(3, {
-    message: "Username must be at least 3 characters.",
+    message: "Task title must be at least 3 characters.",
   }),
   description: z.string().optional(),
 });

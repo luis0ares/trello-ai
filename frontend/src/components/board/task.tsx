@@ -32,13 +32,11 @@ export function Task({
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="bg-white p-2 rounded shadow-sm mb-2 border border-gray-200 "
+          className="bg-gray-100 dark:bg-slate-900 p-2 rounded shadow-sm mb-2 border border-gray-200 dark:border-slate-800"
           style={provided.draggableProps.style}
         >
           <div className="flex w-full justify-between gap-3">
-            <h4 className="text-lg font-bold text-gray-800 line-clamp-2">
-              {task.title}
-            </h4>
+            <h4 className="text-lg font-bold line-clamp-2">{task.title}</h4>
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <EllipsisVertical className="w-4 h-4 opacity-60" />

@@ -148,6 +148,10 @@ function TaskBoards({ boardData }: { boardData: BoardType[] }) {
     if (!res.ok) return;
     const newTask = await res.json();
 
+    toast.success("Task created successfully", {
+      duration: 2000,
+    });
+
     const newData = data.map((board) => {
       if (board.id === boardId)
         board.tasks.push({

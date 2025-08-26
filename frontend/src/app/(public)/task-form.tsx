@@ -13,6 +13,24 @@ import {
 } from "@/components/ui/select";
 import { Plus, X } from "lucide-react";
 import { BoardType } from "@/types";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface TaskFormProps {
   onAddTask: (
@@ -23,33 +41,42 @@ interface TaskFormProps {
   boards: BoardType[];
 }
 
+const taskFormSchema = z.object({
+  title: z.string().min(3, {
+    message: "Task title must be at least 3 characters.",
+  }),
+  description: z.string().optional(),
+  boardId: z.string().min(1, {
+    message: "You must select a board to create a task.",
+  }),
+});
+type taskFormType = z.infer<typeof taskFormSchema>;
+
 export function TaskForm({ onAddTask, boards }: TaskFormProps) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [boardId, setBoardId] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (title.trim() && boardId) {
-      await onAddTask(boardId, title, description);
-      setTitle("");
-      setDescription("");
-      setBoardId("");
-      setIsExpanded(false);
-    }
+  const form = useForm<taskFormType>({
+    resolver: zodResolver(taskFormSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      boardId: "",
+    },
+  });
+
+  async function onSubmit(formData: taskFormType) {
+    await onAddTask(formData.boardId, formData.title, formData.description);
+    closeAndReset()
   }
 
-  const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setBoardId("");
+  function closeAndReset() {
+    form.reset();
     setIsExpanded(false);
-  };
+  }
 
-  if (!isExpanded) {
-    return (
-      <div className="fixed bottom-6 right-6 z-50 ">
+  return (
+    <>
+      <div className="fixed bottom-6 right-6">
         <button
           onClick={() => setIsExpanded(true)}
           className="bg-slate-900 hover:bg-slate-900/80 rounded-full h-14 w-14 flex items-center justify-center text-white p-0"
@@ -57,77 +84,84 @@ export function TaskForm({ onAddTask, boards }: TaskFormProps) {
           <Plus className="w-8 h-8" />
         </button>
       </div>
-    );
-  }
 
-  return (
-    <div className="fixed bottom-6 right-6 z-60">
-      <Card className="w-[480px] p-4 bg-card shadow-xl border animate-slide-up">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Add New Task</h3>
-          <Button variant="ghost" onClick={resetForm} className="h-8 w-8 p-0">
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
+      <Dialog open={isExpanded} onOpenChange={(open) => setIsExpanded(open)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create new task</DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <Label htmlFor="task-title" className="text-sm font-medium">
-              Title *
-            </Label>
-            <Input
-              id="task-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter task title..."
-              className="mt-1"
-              autoFocus
-            />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Task title" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div>
-            <Label htmlFor="task-description" className="text-sm font-medium">
-              Description
-            </Label>
-            <Textarea
-              id="task-description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter task description..."
-              className="mt-1 resize-none h-24"
-              rows={3}
-            />
-          </div>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Task description" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div>
-            <Label className="text-sm font-medium">Board *</Label>
-            <Select value={boardId} onValueChange={setBoardId}>
-              <SelectTrigger className="mt-1 w-full">
-                <SelectValue placeholder="Select a board..." />
-              </SelectTrigger>
-              <SelectContent>
-                {boards.map((board) => (
-                  <SelectItem key={board.id} value={board.id}>
-                    {board.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+              <FormField
+                control={form.control}
+                name="boardId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Board</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a board..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="z-70">
+                        {boards.map((board) => (
+                          <SelectItem key={board.id} value={board.id}>
+                            {board.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex gap-2 pt-2">
-            <Button
-              type="submit"
-              className="flex-1"
-            >
-              Add Task
-            </Button>
-            <Button type="button" variant="outline" onClick={resetForm}>
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </Card>
-    </div>
+              <div className="flex gap-2 pt-2">
+                <Button type="submit" className="flex-1">
+                  Add Task
+                </Button>
+                <Button type="button" variant="outline" onClick={closeAndReset}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
