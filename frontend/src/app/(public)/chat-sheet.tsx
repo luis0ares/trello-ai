@@ -86,7 +86,8 @@ export function ChatSheet({
     function handleNewMessage() {
       if (!lastJsonMessage) return;
 
-      if (lastJsonMessage.type === "reply") {
+      switch (lastJsonMessage.type) {
+      case "reply": {
         const message: Message = {
           id: Date.now().toString(),
           content: lastJsonMessage.data,
@@ -94,10 +95,20 @@ export function ChatSheet({
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, message]);
-      } else if (lastJsonMessage.type === "final") {
+      
+      break;
+      }
+      case "final": {
         onTasksGenerated(lastJsonMessage.data);
-      } else if (lastJsonMessage.type === "error") {
+      
+      break;
+      }
+      case "error": {
         console.error(lastJsonMessage.details);
+      
+      break;
+      }
+      // No default
       }
     }
     handleNewMessage();
