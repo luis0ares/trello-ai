@@ -61,11 +61,11 @@ Example:
 - [x] Implement **task creation**
 - [x] Implement **drag-and-drop** for task cards
 - [x] Implement **task editing**
-- [ ] Implement **task deletion**
-- [ ] Integrate with backend API for data persistence
-- [ ] Improve **UI design** for better support on mobile devices
-- [ ] Implement **AI assistant chat** component
-- [ ] Integrate with OpenAI API for task planning
+- [x] Implement **task deletion**
+- [x] Integrate with backend API for data persistence
+- [x] Improve **UI design** for better support on mobile devices
+- [x] Implement **AI assistant chat** component
+- [x] Integrate with OpenAI API for task planning
 
 ### **Backend**
 
@@ -128,3 +128,5 @@ poetry run task run
 - ✅ API endpoints for tasks
 - ✅ Now it's possible to change the position of boards and tasks by dragging and dropping them
 - ✅ Websocket integrated with Open AI to generate tasks based in the user conversation
+- ✅ Theme toggle between dark and light mode
+- ✅ Hook form and Zod added to better control and validation of user inputs
