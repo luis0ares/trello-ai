@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -11,9 +13,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Send, Star } from "lucide-react";
+import { Send, MessageSquareMore } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
+import useWebSocket, { ReadyState } from "react-use-websocket";
 
 interface Message {
   id: string | number;
@@ -22,130 +25,89 @@ interface Message {
   timestamp: Date;
 }
 
-export function ChatSheet() {
+export type GeneratedTasks = {
+  title: string;
+  description: string;
+  created_by: "AI";
+};
+
+type WSJsonMessage =
+  | {
+      type: "final";
+      data: GeneratedTasks[];
+    }
+  | {
+      type: "reply";
+      data: string;
+    }
+  | {
+      type: "error";
+      details: string;
+    };
+
+function getWebSocketURL() {
+  return `${process.env.NEXT_PUBLIC_BASE_URL}/ws/tasks`
+    .replaceAll("https://", "wss://")
+    .replaceAll("http://", "ws://");
+}
+
+export function ChatSheet({
+  onTasksGenerated,
+}: {
+  onTasksGenerated: (tasks: GeneratedTasks[]) => void;
+}) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-    {
-      id: 2,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "user",
-      timestamp: new Date(),
-    },
-    {
-      id: 3,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-    {
-      id: 4,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "user",
-      timestamp: new Date(),
-    },
-    {
-      id: 5,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-    {
-      id: 6,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "user",
-      timestamp: new Date(),
-    },
-    {
-      id: 7,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-    {
-      id: 8,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "user",
-      timestamp: new Date(),
-    },
-    {
-      id: 9,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-    {
-      id: 10,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "user",
-      timestamp: new Date(),
-    },
-    {
-      id: 11,
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-      sender: "ai",
-      timestamp: new Date(),
-    },
-    {
-      id: 12,
-      content: `
-# My Daily Notes
-
-## Tasks
-- [x] Finish API integration  
-- [ ] Write documentation  
-- [ ] Deploy to production  
-
-## Quote of the Day
-> "Simplicity is the soul of efficiency." – Austin Freeman  
-
-## Code Example
-~~~python
-def hello(name: str):
-    return f"Hello, {name}!"
-~~~
-        `,
-      sender: "ai",
-      timestamp: new Date(),
-    },
-  ]);
-
-  function scrollToBottom() {
-    if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector(
-        "[data-radix-scroll-area-viewport]"
-      );
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
-    }
-  }
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
+    function scrollToBottom() {
+      if (scrollAreaRef.current) {
+        const scrollContainer = scrollAreaRef.current.querySelector(
+          "[data-radix-scroll-area-viewport]"
+        );
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }
+      }
+    }
     // Auto-scroll to bottom when new messages arrive
     scrollToBottom();
   }, [messages]);
 
+  const { sendMessage, lastJsonMessage, readyState } =
+    useWebSocket<WSJsonMessage | null>(getWebSocketURL(), {
+      share: false,
+      shouldReconnect: () => true,
+      onOpen: () => {
+        setMessages([]);
+      },
+    });
+
+  useEffect(() => {
+    function handleNewMessage() {
+      if (!lastJsonMessage) return;
+
+      if (lastJsonMessage.type === "reply") {
+        const message: Message = {
+          id: Date.now().toString(),
+          content: lastJsonMessage.data,
+          sender: "ai",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, message]);
+      } else if (lastJsonMessage.type === "final") {
+        onTasksGenerated(lastJsonMessage.data);
+      } else if (lastJsonMessage.type === "error") {
+        console.error(lastJsonMessage.details);
+      }
+    }
+    handleNewMessage();
+  }, [lastJsonMessage]);
 
   function handleSendMessage(e: React.FormEvent) {
     e.preventDefault();
+
     if (!newMessage.trim()) return;
 
     const message: Message = {
@@ -154,17 +116,20 @@ def hello(name: str):
       sender: "user",
       timestamp: new Date(),
     };
+    sendMessage(newMessage);
 
     setMessages((prev) => [...prev, message]);
     setNewMessage("");
   }
+
+  if (readyState !== ReadyState.OPEN) return <></>;
 
   return (
     <Sheet>
       <SheetTrigger>
         <div className="fixed bottom-24 right-6 z-50 ">
           <div className="bg-slate-900 hover:bg-slate-900/80 rounded-full h-14 w-14 flex items-center justify-center text-white p-0">
-            <Star className="w-8 h-8" />
+            <MessageSquareMore className="w-8 h-8" />
           </div>
         </div>
       </SheetTrigger>
@@ -215,7 +180,11 @@ def hello(name: str):
                 </div>
 
                 <Avatar className="h-14 w-14">
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  {message.sender === "ai" ? (
+                    <AvatarImage src="https://github.com/openai.png" />
+                  ) : (
+                    <AvatarImage src="https://github.com/guest.png" />
+                  )}
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </div>

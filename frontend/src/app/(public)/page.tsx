@@ -10,7 +10,7 @@ import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ChatSheet } from "./chat-sheet";
+import { ChatSheet, GeneratedTasks } from "./chat-sheet";
 
 async function getBoards(): Promise<BoardType[]> {
   const res = await BoardService.getBoards();
@@ -40,8 +40,6 @@ export default function Home() {
     queryFn: getBoards,
     initialData: [],
   });
-
-  console.log(data);
 
   return (
     <>
@@ -163,6 +161,42 @@ function TaskBoards({ boardData }: { boardData: BoardType[] }) {
     setData([...newData]);
   }
 
+  async function handleEditTask(boardId: string, task: TaskType) {
+    const res = await TaskService.updateTask(
+      task.id,
+      boardId,
+      task.title,
+      task.position,
+      task.description
+    );
+    if (!res.ok) {
+      toast.error("Error while updating task", {
+        duration: 2000,
+      });
+      return;
+    }
+
+    toast.success("Task updated successfully", {
+      duration: 2000,
+    });
+
+    const newData = data.map((board) => {
+      if (board.id === boardId)
+        board.tasks = board.tasks.map((boardTask) => {
+          if (boardTask.id === boardTask.id) {
+            return {
+              ...boardTask,
+              title: task.title,
+              description: task.description,
+            };
+          }
+          return boardTask;
+        });
+      return board;
+    });
+    setData([...newData]);
+  }
+
   async function handleAddBoard(name: string) {
     const res = await BoardService.createBoard(name.trim(), data.length);
     if (res.status !== 201) return false;
@@ -188,6 +222,65 @@ function TaskBoards({ boardData }: { boardData: BoardType[] }) {
       },
     });
     return true;
+  }
+
+  async function handleTasksGenerated(tasks: GeneratedTasks[]) {
+    async function createGeneratedTasks(board: BoardType): Promise<TaskType[]> {
+      const createdTasks: TaskType[] = [];
+      let position = board.tasks.length;
+
+      for (const task of tasks) {
+        const res = await TaskService.createTask(
+          board.id,
+          task.title,
+          position,
+          task.description
+        );
+        if (!res.ok) continue;
+        const newTask = await res.json();
+
+        createdTasks.push({
+          id: newTask.id,
+          title: newTask.title,
+          description: newTask.description,
+          position,
+        } as TaskType);
+        position++;
+      }
+      return createdTasks;
+    }
+
+    // Get the 'AI generated' board to create generated tasks
+    const existingBoard = data.find((board) => board.title === "AI Generated");
+    if (existingBoard) {
+      const newTasks = await createGeneratedTasks(existingBoard);
+
+      const newData = data.map((board) => {
+        if (board.id === existingBoard.id) {
+          return {
+            ...board,
+            tasks: [...board.tasks, ...newTasks],
+          };
+        }
+        return board;
+      });
+      setData(newData);
+      return;
+    }
+
+    // Otherwise, create a new board and add generated tasks to it
+    const res = await BoardService.createBoard("AI Generated", data.length);
+    if (res.status !== 201) return;
+    const newBoard = await res.json();
+
+    const createdBoard = {
+      id: newBoard.id,
+      title: newBoard.name,
+      position: newBoard.position,
+      tasks: [],
+    } as BoardType;
+    createdBoard.tasks = await createGeneratedTasks(createdBoard);
+    setData([...data, createdBoard]);
   }
 
   async function handleDeleteBoard(id: string) {
@@ -226,11 +319,12 @@ function TaskBoards({ boardData }: { boardData: BoardType[] }) {
           boards={data}
           onAddBoard={handleAddBoard}
           onDeleteTask={handleDeleteTask}
+          onEditTask={handleEditTask}
           onDeleteBoard={handleDeleteBoard}
         />
       </DragDropContext>
       <TaskForm onAddTask={handleAddTask} boards={data} />
-      <ChatSheet />
+      <ChatSheet onTasksGenerated={handleTasksGenerated} />
     </>
   );
 }

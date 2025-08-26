@@ -2,23 +2,26 @@
 
 import { DraggableProvidedDragHandleProps, Droppable } from "@hello-pangea/dnd";
 import { EllipsisVertical, Trash2 } from "lucide-react";
-import { BoardType } from "@/types";
+import { BoardType, TaskType } from "@/types";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Task } from "./task";
 
 export function Board({
   board,
   onDeleteBoard,
   onDeleteTask,
+  onEditTask,
   dragHandleProps,
 }: {
   board: BoardType;
   onDeleteBoard: (id: string) => Promise<boolean>;
   onDeleteTask: (id: string) => Promise<boolean>;
+  onEditTask: (boardId: string, task: TaskType) => void;
   dragHandleProps: DraggableProvidedDragHandleProps | null;
 }) {
   return (
@@ -59,6 +62,7 @@ export function Board({
                 task={task}
                 index={index}
                 onDeleteTask={onDeleteTask}
+                onEditTask={(task: TaskType) => onEditTask(board.id, task)}
               />
             ))}
             {provided.placeholder}
@@ -66,49 +70,5 @@ export function Board({
         )}
       </Droppable>
     </div>
-  );
-}
-
-import { TaskType } from "@/types";
-import { Draggable } from "@hello-pangea/dnd";
-
-export function Task({
-  task,
-  index,
-  onDeleteTask,
-}: {
-  task: TaskType;
-  index: number;
-  onDeleteTask: (id: string) => Promise<boolean>;
-}) {
-  return (
-    <Draggable draggableId={task.id} index={index}>
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className="bg-white p-2 rounded shadow-sm mb-2 border border-gray-200 "
-          style={provided.draggableProps.style}
-        >
-          <div className="flex w-full justify-between gap-3">
-            <h4 className="text-lg font-bold text-gray-800 line-clamp-2">
-              {task.title}
-            </h4>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <EllipsisVertical className="w-4 h-4 opacity-60" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => onDeleteTask(task.id)}>
-                  <Trash2 className="text-red-600" /> Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <p className="m-1 line-clamp-6">{task.description}</p>
-        </div>
-      )}
-    </Draggable>
   );
 }
