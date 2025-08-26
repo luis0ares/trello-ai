@@ -118,8 +118,7 @@ export function TaskForm({ onAddTask, boards }: TaskFormProps) {
           <div className="flex gap-2 pt-2">
             <Button
               type="submit"
-              className="flex-1 bg-slate-900 hover:bg-slate-900/90"
-              disabled={!title.trim() || !boardId}
+              className="flex-1"
             >
               Add Task
             </Button>

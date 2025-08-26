@@ -137,7 +137,7 @@ export function ChatSheet({
       <SheetContent className="w-full sm:w-[640px] sm:max-w-full border-b bg-slate-200/95 shadow-xl dark:bg-slate-800/95 backdrop-blur text-slate-800 dark:text-slate-200">
         <SheetHeader>
           <SheetTitle className="text-2xl font-semibold border-b pb-4 border-slate-950 dark:border-slate-50 pl-6">
-            Auto create your tasks with AI
+            Auto create tasks with AI
           </SheetTitle>
           <SheetDescription></SheetDescription>
         </SheetHeader>
@@ -179,7 +179,7 @@ export function ChatSheet({
                   </div>
                 </div>
 
-                <Avatar className="h-14 w-14">
+                <Avatar className="h-12 w-12">
                   {message.sender === "ai" ? (
                     <AvatarImage src="https://github.com/openai.png" />
                   ) : (
@@ -203,6 +203,12 @@ export function ChatSheet({
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Type your message..."
               className="max-h-40 resize-none border-slate-950 dark:border-slate-50 bg-transparent shadow-xl"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage(e);
+                }
+              }}
             />
             <Button type="submit" size="icon" className="">
               <Send className="h-6 w-6" />

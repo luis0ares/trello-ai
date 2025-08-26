@@ -39,7 +39,7 @@ export function BoardForm({ onAddBoard }: BoardFormProps) {
   }
 
   return (
-    <Card className="min-w-[320px] p-4 shadow-sm bg-slate-100 mx-2">
+    <Card className="min-w-[320px] p-4 shadow-sm bg-slate-100 dark:bg-slate-900 mx-2">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="board-name" className="text-xl font-medium">
@@ -55,10 +55,7 @@ export function BoardForm({ onAddBoard }: BoardFormProps) {
           />
         </div>
         <div className="flex gap-2">
-          <Button
-            type="submit"
-            className="flex-1 bg-slate-900 hover:bg-slate-900/90"
-          >
+          <Button type="submit" className="flex-1 ">
             Add Board
           </Button>
 
