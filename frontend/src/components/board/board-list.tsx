@@ -1,17 +1,19 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { Board } from "./board";
-import { BoardType } from "@/types";
+import { BoardType, TaskType } from "@/types";
 import { BoardForm } from "./board-form";
 
 export function BoardList({
   onAddBoard,
   onDeleteBoard,
   onDeleteTask,
+  onEditTask,
   boards,
 }: {
   onAddBoard: (name: string) => Promise<boolean>;
   onDeleteBoard: (id: string) => Promise<boolean>;
   onDeleteTask: (id: string) => Promise<boolean>;
+  onEditTask: (boardId: string, task: TaskType) => void;
   boards: BoardType[];
 }) {
   return (
@@ -30,6 +32,7 @@ export function BoardList({
                     board={board}
                     onDeleteBoard={onDeleteBoard}
                     onDeleteTask={onDeleteTask}
+                    onEditTask={onEditTask}
                     dragHandleProps={provided.dragHandleProps}
                   />
                 </div>
@@ -37,7 +40,7 @@ export function BoardList({
             </Draggable>
           ))}
           {provided.placeholder}
-          <BoardForm onAddBoard={onAddBoard}  />
+          <BoardForm onAddBoard={onAddBoard} />
         </div>
       )}
     </Droppable>

@@ -31,6 +31,7 @@ const eslintConfig = [
       "unicorn/error-message": "error",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/no-array-for-each": "off",
+      "unicorn/no-null": "off",
       "unicorn/filename-case": [
         "error",
         {

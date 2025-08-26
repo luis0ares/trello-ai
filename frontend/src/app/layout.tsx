@@ -24,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen w-screen bg-slate-300 dark:bg-slate-700`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-300 dark:bg-slate-700`}
       >
         <Providers>{children}</Providers>
       </body>
