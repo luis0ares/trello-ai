@@ -34,6 +34,6 @@ jobs:
           context: ./frontend
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_USER }}/${{ secrets.IMAGE_NAME_FRONTEND }}:latest
+            ${{ secrets.DOCKER_HUB_USER }}/${{ vars.IMAGE_NAME_FRONTEND }}:latest
           build-args: |
-            API_BASE_URL=${{ secrets.API_BASE_URL }}
+            API_BASE_URL=${{ vars.API_BASE_URL }}

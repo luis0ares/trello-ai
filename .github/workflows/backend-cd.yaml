@@ -34,4 +34,4 @@ jobs:
           context: ./backend
           push: true
           tags: |
-            ${{ secrets.DOCKER_HUB_USER }}/${{ secrets.IMAGE_NAME_FRONTEND }}:latest
+            ${{ secrets.DOCKER_HUB_USER }}/${{ vars.IMAGE_NAME_BACKEND }}:latest
