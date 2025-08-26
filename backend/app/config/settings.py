@@ -7,7 +7,7 @@ EnvType = Literal["PROD", "DEV", "TEST"]
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file="../.env",
+        env_file=".env",
         env_ignore_empty=True,
         env_file_encoding="utf-8",
         extra="ignore",
@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str
     DATABASE_ECHO: bool = False
+
+    OPENAI_API_KEY: str | None
 
 
 envs = Settings()
