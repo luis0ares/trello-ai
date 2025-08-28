@@ -13,6 +13,11 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    LOG_LEVEL: str = 'INFO'
+    # https://docs.python.org/3/library/logging.html#logrecord-attributes
+    LOG_FORMAT: str = \
+        ':%(levelname)s: %(asctime)s > %(message)s >> %(request_id)s'
+
     API_PREFIX: str = '/api'
     INSTANCE_ID: int = 1
     ENVIRONMENT: EnvType = "PROD"

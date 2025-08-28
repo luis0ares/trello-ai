@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.config.logging import RequestTrackingMiddleware
 from app.config.settings import envs
 from app.presentation.api.boards import router as boards_router
 from app.presentation.api.tasks import router as tasks_router
@@ -15,27 +16,25 @@ app = FastAPI(
     version="0.1.0",
     contact={
         "name": "Luis Eduardo Soares",
-        "url": "https://github.com/luis0ares",
+        "url": "https://www.linkedin.com/in/luis0ares",
         "email": "luisedu.soares@outlook.com"
     },
     root_path=envs.API_PREFIX,
 )
 
 
-origins = [
-    "http://localhost",
-    "http://localhost:3000",
-]
-
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=envs.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=envs.CORS_METHODS,
+    allow_headers=envs.CORS_HEADERS,
 )
-
-
+# Logging
+app.add_middleware(RequestTrackingMiddleware)
+# REST Routes
 app.include_router(boards_router)
 app.include_router(tasks_router)
+# Websocket Routes
 app.include_router(ws_tasks_router)
