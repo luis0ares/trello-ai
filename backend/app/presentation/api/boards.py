@@ -7,7 +7,8 @@ from app.application.use_cases.create_board import CreateBoardUseCase
 from app.application.use_cases.delete_board import DeleteBoardUseCase
 from app.application.use_cases.get_boards import GetBoardsUseCase
 from app.application.use_cases.update_board import UpdateBoardUseCase
-from app.presentation.dependencies import BoardRepository, TaskRepository
+from app.config.logging import logger
+from app.presentation.dependencies import BoardRepository
 from app.presentation.schemas.boards import (
     BoardCreate,
     BoardResponse,
@@ -19,9 +20,8 @@ router = APIRouter(prefix="/boards", tags=["Boards"])
 
 
 @router.get("", response_model=List[BoardResponse])
-async def get_boards(
-        board_repository: BoardRepository, task_repository: TaskRepository):
-    use_case = GetBoardsUseCase(board_repository, TaskRepository)
+async def get_boards(board_repository: BoardRepository):
+    use_case = GetBoardsUseCase(logger, board_repository)
     boards = await use_case.execute()
 
     return [BoardResponse(
@@ -47,7 +47,7 @@ async def create_board(payload: BoardCreate,
                        board_repository: BoardRepository):
     board = BoardCreateDTO(name=payload.name, position=payload.position)
 
-    use_case = CreateBoardUseCase(board_repository)
+    use_case = CreateBoardUseCase(logger, board_repository)
     created_board = await use_case.execute(board)
 
     return BoardResponse(
@@ -64,7 +64,7 @@ async def update_board(id: str, payload: BoardUpdate,
                        board_repository: BoardRepository):
     board = BoardUpdateDTO(name=payload.name, position=payload.position)
 
-    use_case = UpdateBoardUseCase(board_repository)
+    use_case = UpdateBoardUseCase(logger, board_repository)
     updated_board = await use_case.execute(int(id), board)
 
     return BoardResponse(
@@ -78,5 +78,5 @@ async def update_board(id: str, payload: BoardUpdate,
 
 @router.delete("/{id}", status_code=204)
 async def delete_board(id: str, board_repository: BoardRepository):
-    use_case = DeleteBoardUseCase(board_repository)
+    use_case = DeleteBoardUseCase(logger, board_repository)
     await use_case.execute(int(id))

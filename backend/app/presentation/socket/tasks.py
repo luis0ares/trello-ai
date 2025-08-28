@@ -1,9 +1,11 @@
+import traceback
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from openai import AsyncOpenAI, DefaultAioHttpClient
 
 from app.application.use_cases.task_suggestion import TaskSuggestionUseCase
 from app.config.settings import envs
+from app.config.logging import logger
 
 router = APIRouter(prefix="/ws", tags=["WebSockets"])
 
@@ -11,9 +13,11 @@ router = APIRouter(prefix="/ws", tags=["WebSockets"])
 @router.websocket("/tasks", name="Auto generate tasks with AI")
 async def ai_tasks_ws(websocket: WebSocket):
     await websocket.accept()
+    logger.info(f"WebSocket connection accepted.")
 
     open_ai_key = envs.OPENAI_API_KEY
     if not open_ai_key:
+        logger.error("OpenAI API key is missing, closing websocket connection")
         await websocket.close(code=4000, reason="Missing OpenAI API Key")
         return
 
@@ -21,7 +25,7 @@ async def ai_tasks_ws(websocket: WebSocket):
         api_key=open_ai_key,
         http_client=DefaultAioHttpClient(),
     ) as client:
-        use_case = TaskSuggestionUseCase(client)
+        use_case = TaskSuggestionUseCase(logger, client)
         try:
             while True:
                 last_message = await websocket.receive_text()
@@ -37,58 +41,24 @@ async def ai_tasks_ws(websocket: WebSocket):
                 except RuntimeError as e:
                     await websocket.send_json({
                         "type": "error",
-                        "details": f"OpenAI request failed: {str(e)}"
+                        "details": "The AI model couldn't process your request. Please try again later."
                     })
                     continue
 
         except WebSocketDisconnect:
-            ...
-        except Exception as e:
+            logger.info("Websocket disconnected due to client disconnect")
+
+        except Exception as err:
             # Unexpected errors: try to notify client and close connection
             try:
+                logger.info("Trying to notify client about error...")
                 await websocket.send_json({
                     "type": "error",
-                    "details": f"Unexpected error: {str(e)}"}
-                )
+                    "details": "Closing connection due to unexpected error"
+                })
             finally:
+                logger.error(
+                    f"Closing connection due to unexpected error: {str(err)}")
+                logger.error(
+                    str(err), exc_info=err, stacklevel=1, stack_info=True)
                 await websocket.close()
-
-
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <h1>WebSocket Chat</h1>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-            var ws = new WebSocket("ws://localhost:8000/api/ws/tasks");
-            ws.onmessage = function(event) {
-                var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var content = document.createTextNode(event.data)
-                message.appendChild(content)
-                messages.appendChild(message)
-            };
-            function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
-            }
-        </script>
-    </body>
-</html>
-"""
-
-
-@router.get("/tasks/client")
-async def get():
-    return HTMLResponse(html)
