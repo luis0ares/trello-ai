@@ -63,11 +63,15 @@ class RequestTrackingMiddleware(BaseHTTPMiddleware):
         client_ip = request.headers.get(
             "X-Forwarded-For", request.client.host).split(",")[0].strip()
 
-        response = await call_next(request)
-
         # request logging
-        logger.info(f"[{client_ip}][{request.method}] " +
-                    f"{request.url}[{response.status_code}]")
+        logger.info(f"[{client_ip}][{request.method}][{request.url}]")
+
+        response = await call_next(request)
+        scode = response.status_code
+
+        # response logging
+        logger.info(
+            f"[{client_ip}][{request.method}][{request.url}][{scode}]")
 
         response.headers["X-Request-ID"] = request_id
         return response
