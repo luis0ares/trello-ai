@@ -1,16 +1,9 @@
-import uuid
 import logging
 import contextvars
-from fastapi import Request
-from starlette.middleware.base import BaseHTTPMiddleware
+from pathlib import Path
 
 from app.config.settings import envs
 
-
-uvicorn_error = logging.getLogger('uvicorn.error')
-uvicorn_error.disabled = False
-uvicorn_access = logging.getLogger('uvicorn.access')
-uvicorn_access.disabled = True
 
 # context to store request id
 request_id_ctx = contextvars.ContextVar("request_id", default=None)
@@ -20,7 +13,7 @@ logger = logging.getLogger("app")
 logger.setLevel(envs.LOG_LEVEL)
 
 
-# configuration
+# Custom Filter to add request id to logs
 class RequestIdFilter(logging.Filter):
     def filter(self, record):
         # default request id for logs out of a http request context
@@ -29,13 +22,21 @@ class RequestIdFilter(logging.Filter):
         return True
 
 
-handler = logging.StreamHandler()
-formatter = logging.Formatter(
+log_formatter = logging.Formatter(
     envs.LOG_FORMAT,
     datefmt='%Y-%m-%dT%H:%M:%S%z'
 )
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(log_formatter)
+console_handler.setLevel(envs.LOG_LEVEL)
+logger.addHandler(console_handler)
+
+file_handler = logging.FileHandler(Path("app.log"))
+file_handler.setFormatter(log_formatter)
+file_handler.setLevel(envs.LOG_LEVEL)
+logger.addHandler(file_handler)
+
 logger.addFilter(RequestIdFilter())
 
 if envs.DATABASE_ECHO:
@@ -43,38 +44,11 @@ if envs.DATABASE_ECHO:
     sqlalchemy_logger.handlers.clear()
     sqlalchemy_logger.propagate = False
 
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        envs.LOG_FORMAT, datefmt='%Y-%m-%dT%H:%M:%S%z',
-    )
-    ch.setFormatter(formatter)
-    sqlalchemy_logger.addHandler(ch)
+    sqlalchemy_logger.addHandler(console_handler)
+    sqlalchemy_logger.addHandler(file_handler)
     sqlalchemy_logger.addFilter(RequestIdFilter())
 
-
-class RequestTrackingMiddleware(BaseHTTPMiddleware):
-    # Middleware to intercept every request and gerenare a request_id
-    async def dispatch(self, request: Request, call_next):
-        request_id = str(uuid.uuid4())
-        request_id_ctx.set(request_id)
-
-        # Forward client ip
-        client_ip = request.headers.get(
-            "X-Forwarded-For", request.client.host).split(",")[0].strip()
-
-        # request logging
-        logger.info(f"[{client_ip}][{request.method}][{request.url}]")
-
-        response = await call_next(request)
-        scode = response.status_code
-
-        # response logging
-        logger.info(
-            f"[{client_ip}][{request.method}][{request.url}][{scode}]")
-
-        response.headers["X-Request-ID"] = request_id
-        return response
-
-
-logger.info("Logger configured successfully.")
+for name in logging.root.manager.loggerDict:
+    if name.startswith("uvicorn"):
+        logger.info(f"Logger '{name}' disabled")
+        logging.getLogger(name).disabled = True

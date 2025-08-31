@@ -1,6 +1,4 @@
-import traceback
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
 from openai import AsyncOpenAI, DefaultAioHttpClient
 
 from app.application.use_cases.task_suggestion import TaskSuggestionUseCase

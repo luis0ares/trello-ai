@@ -15,8 +15,9 @@ class Settings(BaseSettings):
 
     LOG_LEVEL: str = 'INFO'
     # https://docs.python.org/3/library/logging.html#logrecord-attributes
+    # 'request_id' is an unique id generated for each request
     LOG_FORMAT: str = \
-        '|%(levelname)s| [%(asctime)s] [%(filename)s] > %(request_id)s >> %(message)s'
+        '[%(asctime)s] |%(levelname)s| [%(filename)s] > %(request_id)s >> %(message)s'
 
     API_PREFIX: str = '/api'
     INSTANCE_ID: int = 1

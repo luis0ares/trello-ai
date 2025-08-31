@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.config.logging import RequestTrackingMiddleware
+from app.config.middleware import register_middleware
 from app.config.settings import envs
 from app.presentation.api.boards import router as boards_router
 from app.presentation.api.tasks import router as tasks_router
@@ -31,8 +31,8 @@ app.add_middleware(
     allow_methods=envs.CORS_METHODS,
     allow_headers=envs.CORS_HEADERS,
 )
-# Logging
-app.add_middleware(RequestTrackingMiddleware)
+# Logging middlewares
+register_middleware(app)
 # REST Routes
 app.include_router(boards_router)
 app.include_router(tasks_router)
