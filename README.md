@@ -136,3 +136,4 @@ poetry run task run
 
 - ✅ Custom logging
 - ✅ Every client request now is tracked in the logs by an unique id
+- ✅ Standardized API and Websocket loggings
