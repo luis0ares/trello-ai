@@ -1,8 +1,9 @@
 import logging
 import uuid
+
 from fastapi import FastAPI, Request
 from starlette.middleware.base import BaseHTTPMiddleware, DispatchFunction
-from starlette.types import Scope, Receive, Send, ASGIApp
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from app.config.logging import request_id_ctx
 

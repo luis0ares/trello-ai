@@ -44,6 +44,14 @@ target-version = "py311"
 line-length = 79
 exclude = ["*_prompt.py"]
 
+[tool.ruff.lint.pycodestyle]
+# E501 reports lines that exceed the length of 120.
+max-line-length = 120
+
+[tool.ruff.lint.pydoclint]
+# Skip docstrings which fit on a single line.
+ignore-one-line-docstrings = true
+
 [tool.ruff.lint]
 preview = true
 select = ['I', 'F', 'E', 'W', 'PT']

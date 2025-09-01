@@ -54,7 +54,7 @@ class TaskSuggestionUseCase:
 
         try:
             self.logger.info(
-                f"Calling OpenAI with conversation history to get AI reply")
+                "Calling OpenAI with conversation history to get AI reply")
             completion = await self.client.chat.completions.create(
                 model=self.open_ai_model,
                 messages=self._conversation_history,

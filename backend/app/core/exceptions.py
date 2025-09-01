@@ -6,7 +6,7 @@ class UnicornException(Exception):
 
     def __str__(self):
         return f'{self.message}'
-    
+
 
 class ResourseNotFound(UnicornException):
     ...
