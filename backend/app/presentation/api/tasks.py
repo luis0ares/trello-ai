@@ -5,6 +5,7 @@ from app.application.dtos.task_dto import TaskCreateDTO, TaskUpdateDTO
 from app.application.use_cases.create_task import CreateTaskUseCase
 from app.application.use_cases.delete_task import DeleteTaskUseCase
 from app.application.use_cases.update_task import UpdateTaskUseCase
+from app.config.logging import logger
 from app.presentation.dependencies import BoardRepository, TaskRepository
 from app.presentation.schemas.tasks import (
     TaskCreate,
@@ -26,7 +27,7 @@ async def create_task(payload: TaskCreate,
         position=payload.position
     )
 
-    use_case = CreateTaskUseCase(board_repository, task_repository)
+    use_case = CreateTaskUseCase(logger, board_repository, task_repository)
     created_task = await use_case.execute(task)
 
     return TaskResponse(
@@ -51,7 +52,7 @@ async def update_task(id: str, payload: TaskUpdate,
         position=payload.position
     )
 
-    use_case = UpdateTaskUseCase(board_repository, task_repository)
+    use_case = UpdateTaskUseCase(logger, board_repository, task_repository)
     updated_task = await use_case.execute(int(id), task)
 
     return TaskResponse(
@@ -67,5 +68,5 @@ async def update_task(id: str, payload: TaskUpdate,
 
 @router.delete("/{id}", status_code=204)
 async def delete_task(id: str, task_repository: TaskRepository):
-    use_case = DeleteTaskUseCase(task_repository)
+    use_case = DeleteTaskUseCase(logger, task_repository)
     await use_case.execute(int(id))

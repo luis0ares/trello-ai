@@ -133,3 +133,7 @@ poetry run task run
 - ✅ Hook form and Zod added to better control and validation of user inputs
 
 ### **v0.1.2 - Task Board** (to release)
+
+- ✅ Custom logging
+- ✅ Every client request now is tracked in the logs by an unique id
+- ✅ Standardized API and Websocket loggings

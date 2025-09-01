@@ -1,4 +1,5 @@
 import json
+from logging import Logger
 from typing import List, Literal, TypedDict
 
 from openai import AsyncOpenAI
@@ -14,14 +15,19 @@ class _ConversationContent(TypedDict):
 
 
 class TaskSuggestionUseCase:
-    def __init__(self, client: AsyncOpenAI,
+    def __init__(self, logger: Logger, client: AsyncOpenAI,
                  model: ChatModel = "gpt-4o-mini"):
+        self.logger = logger
         self.client = client
         self.open_ai_model = model
+        self.logger.info(
+            "Appending system prompt to the conversation history.")
         self._conversation_history: List[_ConversationContent] = [
             {"role": "system", "content": TASK_SYSTEM_PROMPT}]
 
-    def __try_parse_json(self, text: str) -> List[StructuredReply]:
+    def __try_parse_json(self, text: str) -> List[StructuredReply] | None:
+        self.logger.info(
+            "Trying to parse AI reply in a structured JSON format.")
         try:
             return json.loads(text)
         except Exception:
@@ -41,22 +47,28 @@ class TaskSuggestionUseCase:
 
         :raise RuntimeError: OpenAI API error.
         """
-
+        self.logger.info("Appending user message to conversation history")
+        self.logger.debug(f"User message: {message}")
         self._conversation_history.append(
             {"role": "user", "content": message})
 
         try:
+            self.logger.info(
+                f"Calling OpenAI with conversation history to get AI reply")
             completion = await self.client.chat.completions.create(
                 model=self.open_ai_model,
                 messages=self._conversation_history,
                 temperature=0.2,
             )
         except Exception as e:
+            self.logger.error(f"Error calling OpenAI API: {e}")
             raise RuntimeError(f"OpenAI API error: {e}")
 
         # Save AI reply in conversation history
         ai_reply = completion.choices[0].message.content or ""
         if ai_reply:
+            self.logger.info("Appending AI reply to conversation history")
+            self.logger.debug(f"AI reply: {ai_reply}")
             self._conversation_history.append(
                 {"role": "assistant", "content": ai_reply})
 
