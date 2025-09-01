@@ -12,7 +12,8 @@ from alembic import context
 config = context.config
 
 from app.config.settings import envs
-config.set_main_option("sqlalchemy.url", envs.DATABASE_URL)
+if envs.ENVIRONMENT != 'TEST':
+    config.set_main_option("sqlalchemy.url", envs.DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
