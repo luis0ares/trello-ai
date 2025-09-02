@@ -26,12 +26,20 @@ class HTTPLifecycleMiddleware(BaseHTTPMiddleware):
         # request logging
         self.logger.info(f"[{client_ip}][{request.method}][{request.url}]")
 
-        response = await call_next(request)
-        scode = response.status_code
+        try:
+            response = await call_next(request)
+            scode = response.status_code
 
-        # response logging
-        self.logger.info(
-            f"[{client_ip}][{request.method}][{request.url}][{scode}]")
+            # response logging
+            self.logger.info(
+                f"[{client_ip}][{request.method}][{request.url}][{scode}]")
+        except Exception as err:
+            # response logging
+            self.logger.exception(
+                f"{str(err)}\n",
+                exc_info=err,
+                stack_info=True
+            )
 
         response.headers["X-Request-ID"] = request_id
         return response

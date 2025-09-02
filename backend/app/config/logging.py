@@ -4,7 +4,6 @@ from pathlib import Path
 
 from app.config.settings import envs
 
-    
 # context to store request id
 request_id_ctx = contextvars.ContextVar("request_id", default=None)
 

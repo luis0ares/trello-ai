@@ -7,7 +7,7 @@ async def test_create_board_with_success(async_client: AsyncClient):
         "name": 'Test Board',
         "position": 1
     })
-    
+
     # Assert
     assert response.status_code == 201, \
         f"Expected status code 201, but got {response.status_code}"

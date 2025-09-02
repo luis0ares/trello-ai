@@ -28,7 +28,7 @@ async def test_create_task_with_success_without_description(
         f"Expected status code 201, but got {response.status_code}"
     data = response.json()
     assert data['title'] == 'Test Task'
-    assert data['description'] == None
+    assert data['description'] is None
     assert data['position'] == 1
     assert data['board_id'] == board_id
 
@@ -103,7 +103,7 @@ async def test_update_task_with_success(
         f"Expected status code 200, but got {response.status_code}"
     task_updated = response.json()
     assert task_updated['title'] == "Test Tasking"
-    assert task_updated['description'] == None
+    assert task_updated['description'] is None
     assert task_updated['position'] == 5
 
 

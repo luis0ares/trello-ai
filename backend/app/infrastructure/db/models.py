@@ -22,8 +22,10 @@ class BaseMixin:
         onupdate=func.now(), nullable=True
     )
 
+
 class Base(DeclarativeBase):
     ...
+
 
 class BoardEntity(BaseMixin, Base):
     __tablename__ = "boards"
