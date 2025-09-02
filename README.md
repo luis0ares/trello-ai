@@ -123,7 +123,7 @@ poetry run task run
 - ✅ API endpoints for boards
 - ✅ Basic frontend UI and CI/CD setup
 
-### **v0.1.1 - Task Board**
+### **v0.1.1**
 
 - ✅ API endpoints for tasks
 - ✅ Now it's possible to change the position of boards and tasks by dragging and dropping them
@@ -132,4 +132,14 @@ poetry run task run
 - ✅ Theme toggle between dark and light mode
 - ✅ Hook form and Zod added to better control and validation of user inputs
 
-### **v0.1.2 - Task Board** (to release)
+### **v0.1.2**
+
+- ✅ Use github variables to set the image name in CD action
+
+### **v0.2.0**
+
+- ✅ Custom logging
+- ✅ Every client request now is tracked in the logs by an unique id
+- ✅ Standardized API and Websocket loggings
+- ✅ Exception handlers
+- ✅ Board and Task routes tests with testcontainers

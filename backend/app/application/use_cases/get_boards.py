@@ -1,16 +1,15 @@
+from logging import Logger
 from typing import List
 
 from app.application.dtos.board_dto import BoardWithTasksDTO
 from app.application.dtos.task_dto import TaskDTO
 from app.domain.repositories.board_repository import BoardRepository
-from app.domain.repositories.task_repository import TaskRepository
 
 
 class GetBoardsUseCase:
-    def __init__(self, board_repository: BoardRepository,
-                 task_repository: TaskRepository):
+    def __init__(self, logger: Logger, board_repository: BoardRepository):
+        self.logger = logger
         self.board_repository = board_repository
-        self.task_repository = task_repository
 
     async def execute(self) -> List[BoardWithTasksDTO]:
         """
@@ -19,6 +18,8 @@ class GetBoardsUseCase:
         :return: A list of boards.
         """
         boards = await self.board_repository.get_all()
+        self.logger.debug(f"Retrieved {len(boards)} boards")
+
         return [BoardWithTasksDTO(
             id=str(board.external_id),
             name=board.name,

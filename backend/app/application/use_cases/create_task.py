@@ -1,12 +1,17 @@
+from dataclasses import asdict
+from logging import Logger
+
 from app.application.dtos.task_dto import TaskCreateDTO, TaskDTO
+from app.core.exceptions import ResourseNotFound
 from app.domain.models.task import TaskCreateModel
 from app.domain.repositories.board_repository import BoardRepository
 from app.domain.repositories.task_repository import TaskRepository
 
 
 class CreateTaskUseCase:
-    def __init__(self, board_repository: BoardRepository,
+    def __init__(self, logger: Logger, board_repository: BoardRepository,
                  task_repository: TaskRepository):
+        self.logger = logger
         self.board_repository = board_repository
         self.task_repository = task_repository
 
@@ -19,12 +24,14 @@ class CreateTaskUseCase:
         """
         if not isinstance(task_data, TaskCreateDTO):
             raise ValueError("Invalid payload type")
+        self.logger.debug(f"Received task data: {asdict(task_data)}")
 
         board = await self.board_repository.get_by_external_id(
             task_data.board_id)
         if not board:
-            # TODO: Custom exception for not found and an exeption handler
-            raise ValueError("Board not found")
+            self.logger.info(
+                f"Board with external ID {task_data.board_id} not found")
+            raise ResourseNotFound("Board not found")
 
         # Create the task using the repository
         to_create = TaskCreateModel(
@@ -35,6 +42,9 @@ class CreateTaskUseCase:
         )
 
         created_task = await self.task_repository.create(to_create)
+        self.logger.debug(f"Created task: {asdict(created_task)}")
+        self.logger.info(
+            f"Task created successfully. - Id: {created_task.id}")
 
         return TaskDTO(
             id=str(created_task.external_id),

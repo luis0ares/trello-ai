@@ -3,6 +3,7 @@ from typing import List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.exceptions import ResourseNotFound
 from app.domain.models.task import (
     TaskCreateModel,
     TaskModel,
@@ -70,7 +71,7 @@ class TaskRepositoryImpl(TaskRepository):
             task_entity = result.scalar_one_or_none()
 
             if not task_entity:
-                raise ValueError("Task not found")
+                raise ResourseNotFound("Task not found")
 
             task_entity.board_id = task_data.board_id
             task_entity.title = task_data.title
@@ -102,7 +103,7 @@ class TaskRepositoryImpl(TaskRepository):
             task_entity = result.scalar_one_or_none()
 
             if not task_entity:
-                raise ValueError("Task not found")
+                raise ResourseNotFound("Task not found")
 
             await self.db_session.delete(task_entity)
             await self.db_session.commit()
