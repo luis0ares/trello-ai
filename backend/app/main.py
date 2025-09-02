@@ -5,6 +5,7 @@ from app.config.middleware import register_middleware
 from app.config.settings import envs
 from app.presentation.api.boards import router as boards_router
 from app.presentation.api.tasks import router as tasks_router
+from app.presentation.handlers import register_handlers
 from app.presentation.socket.tasks import router as ws_tasks_router
 
 app = FastAPI(
@@ -33,6 +34,8 @@ app.add_middleware(
 )
 # Logging middlewares
 register_middleware(app)
+# Register exception handlers
+register_handlers(app)
 # REST Routes
 app.include_router(boards_router)
 app.include_router(tasks_router)
