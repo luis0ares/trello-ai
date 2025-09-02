@@ -4,6 +4,7 @@ from pathlib import Path
 
 from app.config.settings import envs
 
+    
 # context to store request id
 request_id_ctx = contextvars.ContextVar("request_id", default=None)
 
@@ -26,10 +27,12 @@ log_formatter = logging.Formatter(
     datefmt='%Y-%m-%dT%H:%M:%S%z'
 )
 
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(log_formatter)
-console_handler.setLevel(envs.LOG_LEVEL)
-logger.addHandler(console_handler)
+# Disable logging to console in test environment
+if envs.ENVIRONMENT != "TEST":
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(log_formatter)
+    console_handler.setLevel(envs.LOG_LEVEL)
+    logger.addHandler(console_handler)
 
 file_handler = logging.FileHandler(Path("app.log"))
 file_handler.setFormatter(log_formatter)

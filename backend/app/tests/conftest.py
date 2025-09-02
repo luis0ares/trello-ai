@@ -1,18 +1,12 @@
-import asyncio
 import pytest_asyncio
-from alembic import command
-from alembic.config import Config
-from pathlib import Path
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import (
     create_async_engine, async_sessionmaker, AsyncSession)
 from testcontainers.postgres import PostgresContainer
-from httpx import AsyncClient, ASGITransport
 
-from app.main import app as main_app
 from app.infrastructure.db.database import get_session
-
-
-alembic_cfg = Config(f'{Path().absolute()}/alembic.ini')
+from app.infrastructure.db.models import Base
+from app.main import app as main_app
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -23,47 +17,26 @@ async def db_container():
     container.stop()
 
 
-@pytest_asyncio.fixture(scope='session')
-async def async_session_maker(db_container):
+@pytest_asyncio.fixture
+async def db_session(db_container):
     db_url = db_container.get_connection_url().replace(
         "postgresql://", "postgresql+asyncpg://"
     )
-    alembic_cfg.set_main_option("sqlalchemy.url", db_url)
     async_engine = create_async_engine(db_url, echo=False, future=True)
+
+    # Reset database tables before each test
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
 
     async_session_maker = async_sessionmaker(
         async_engine, autoflush=False, expire_on_commit=False
     )
-    yield async_session_maker
-    await async_engine.dispose()
-
-
-@pytest_asyncio.fixture(scope='function')
-async def db_session(async_session_maker):
-    """
-    AsyncSession factory bound to the test engine.
-    """
-    loop = asyncio.get_event_loop()
-
     async with async_session_maker() as session:
-        try:
-            # create the DB schema
-            await loop.run_in_executor(
-                None, lambda: command.upgrade(alembic_cfg, "head"))
-            # wait for tests to finish
-            yield session
-        except Exception:
-            await session.rollback()
-            raise
-        finally:
-            # drop the DB schema
-            await loop.run_in_executor(
-                None, lambda: command.downgrade(alembic_cfg, "base"))
-            # close the session
-            await session.close()
+        yield session
 
 
-@pytest_asyncio.fixture(scope='function')
+@pytest_asyncio.fixture
 async def async_client(db_session: AsyncSession):
     """
     Async HTTP client for the FastAPI app, using the test DB session.
@@ -75,7 +48,8 @@ async def async_client(db_session: AsyncSession):
     main_app.dependency_overrides[get_session] = override_get_session
 
     transport = ASGITransport(app=main_app)
-    async with AsyncClient(transport=transport, base_url="http://test/api") as ac:
-        yield ac
+    async with AsyncClient(transport=transport, 
+                           base_url="http://test/api") as client:
+        yield client
 
     main_app.dependency_overrides.clear()
