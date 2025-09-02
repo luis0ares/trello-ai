@@ -7,7 +7,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from app.infrastructure.db.database import generate_snowflake_id
 
 
-class BaseMixin(DeclarativeBase):
+class BaseMixin:
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     external_id: Mapped[int] = mapped_column(
         BigInteger,
@@ -23,7 +23,11 @@ class BaseMixin(DeclarativeBase):
     )
 
 
-class BoardEntity(BaseMixin):
+class Base(DeclarativeBase):
+    ...
+
+
+class BoardEntity(BaseMixin, Base):
     __tablename__ = "boards"
 
     name: Mapped[str] = mapped_column(index=True)
@@ -34,7 +38,7 @@ class BoardEntity(BaseMixin):
         order_by="TaskEntity.position")
 
 
-class TaskEntity(BaseMixin):
+class TaskEntity(BaseMixin, Base):
     __tablename__ = "tasks"
 
     title: Mapped[str] = mapped_column(index=True)

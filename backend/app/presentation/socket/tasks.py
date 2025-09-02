@@ -2,8 +2,8 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from openai import AsyncOpenAI, DefaultAioHttpClient
 
 from app.application.use_cases.task_suggestion import TaskSuggestionUseCase
-from app.config.settings import envs
 from app.config.logging import logger
+from app.config.settings import envs
 
 router = APIRouter(prefix="/ws", tags=["WebSockets"])
 
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/ws", tags=["WebSockets"])
 @router.websocket("/tasks", name="Auto generate tasks with AI")
 async def ai_tasks_ws(websocket: WebSocket):
     await websocket.accept()
-    logger.info(f"WebSocket connection accepted.")
+    logger.info("WebSocket connection accepted.")
 
     open_ai_key = envs.OPENAI_API_KEY
     if not open_ai_key:
@@ -36,7 +36,7 @@ async def ai_tasks_ws(websocket: WebSocket):
                         "data": data
                     })
 
-                except RuntimeError as e:
+                except RuntimeError:
                     await websocket.send_json({
                         "type": "error",
                         "details": "The AI model couldn't process your request. Please try again later."

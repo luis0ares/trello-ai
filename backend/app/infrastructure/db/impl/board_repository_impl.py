@@ -3,6 +3,7 @@ from typing import List
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.exceptions import ResourseNotFound
 from app.domain.models.board import (
     BoardCreateModel,
     BoardModel,
@@ -95,7 +96,7 @@ class BoardRepositoryImpl(BoardRepository):
             board_entity = result.scalar_one_or_none()
 
             if not board_entity:
-                raise ValueError("Board not found")
+                raise ResourseNotFound("Board not found")
 
             board_entity.name = board_data.name
             board_entity.position = board_data.position
@@ -123,7 +124,7 @@ class BoardRepositoryImpl(BoardRepository):
             board_entity = result.scalar_one_or_none()
 
             if not board_entity:
-                raise ValueError("Board not found")
+                raise ResourseNotFound("Board not found")
 
             await self.db_session.delete(board_entity)
             await self.db_session.commit()

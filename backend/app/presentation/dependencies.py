@@ -9,14 +9,14 @@ from app.infrastructure.db.impl.board_repository_impl import (
 )
 from app.infrastructure.db.impl.task_repository_impl import TaskRepositoryImpl
 
-_DbSession = Annotated[AsyncSession, Depends(get_session)]
+DbSession = Annotated[AsyncSession, Depends(get_session)]
 
 
-def get_board_repository(session: _DbSession) -> BoardRepositoryImpl:
+def get_board_repository(session: DbSession) -> BoardRepositoryImpl:
     return BoardRepositoryImpl(db_session=session)
 
 
-def get_task_repository(session: _DbSession) -> TaskRepositoryImpl:
+def get_task_repository(session: DbSession) -> TaskRepositoryImpl:
     return TaskRepositoryImpl(db_session=session)
 
 
