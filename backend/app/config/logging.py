@@ -33,10 +33,12 @@ if envs.ENVIRONMENT != "TEST":
     console_handler.setLevel(envs.LOG_LEVEL)
     logger.addHandler(console_handler)
 
-file_handler = logging.FileHandler(Path("app.log"))
-file_handler.setFormatter(log_formatter)
-file_handler.setLevel(envs.LOG_LEVEL)
-logger.addHandler(file_handler)
+# Disable logging to file in production environment
+if envs.ENVIRONMENT != "PROD":
+    file_handler = logging.FileHandler(Path("app.log"))
+    file_handler.setFormatter(log_formatter)
+    file_handler.setLevel(envs.LOG_LEVEL)
+    logger.addHandler(file_handler)
 
 logger.addFilter(RequestIdFilter())
 
