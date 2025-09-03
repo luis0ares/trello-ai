@@ -143,3 +143,7 @@ poetry run task run
 - ✅ Standardized API and Websocket loggings
 - ✅ Exception handlers
 - ✅ Board and Task routes tests with testcontainers
+
+### **v0.2.1**
+
+- ✅ Logger handler to file disabled in production
